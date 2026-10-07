@@ -75,8 +75,8 @@ npm run dev:pages
 本地打开 `http://127.0.0.1:4174`。修改 Markdown/JSON 后重新启动此预览命令，以重新生成内容。
 
 ```sh
-npm run test:pages
 npm run build:pages
+npm run test:pages
 ```
 
 构建结果在 `website/dist/client`，包含首页、公开内容 JSON、RSS、字体和插画。页面采用 hash 路由，文章链接刷新无需服务器重写规则。
