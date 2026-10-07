@@ -27,3 +27,14 @@
 @media(prefers-reduced-motion:reduce){[data-reveal-state]{opacity:1!important;filter:none!important;transform:none!important}}
 .profile-topic-line{display:inline-block;white-space:nowrap}
 @media(max-width:560px){.profile-topic-line{display:block}.profile-title-dot{display:none}}
+
+/* Brand signature: typography supplies the emphasis without punctuation. */
+.brand small{letter-spacing:3.8px;color:var(--gold)}
+.hero-copy .brand-statement,.about-grid .brand-statement{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:clamp(44px,5.4vw,76px);letter-spacing:-.015em;line-height:.94;white-space:normal}
+.brand-statement>span{display:block}
+.brand-statement>span+span{margin-top:.08em}
+.brand-statement em{font-style:normal;color:var(--gold)}
+.hero-copy .brand-statement+p{margin-top:20px;font-size:clamp(15px,1.75vw,24px)}
+.about-grid .brand-statement{font-size:clamp(58px,7.4vw,104px);margin-top:18px}
+@media(max-width:800px){.hero-copy .brand-statement{font-size:clamp(48px,8vw,66px)}.about-grid .brand-statement{font-size:clamp(58px,10vw,84px)}}
+@media(max-width:480px){.hero-copy .brand-statement{font-size:clamp(44px,13vw,60px)}}
