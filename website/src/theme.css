@@ -28,13 +28,12 @@
 .profile-topic-line{display:inline-block;white-space:nowrap}
 @media(max-width:560px){.profile-topic-line{display:block}.profile-title-dot{display:none}}
 
-/* Brand signature: typography supplies the emphasis without punctuation. */
+/* Chinese signature uses a decorative rule instead of punctuation. */
 .brand small{letter-spacing:3.8px;color:var(--gold)}
-.hero-copy .brand-statement,.about-grid .brand-statement{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:clamp(44px,5.4vw,76px);letter-spacing:-.015em;line-height:.94;white-space:normal}
-.brand-statement>span{display:block}
-.brand-statement>span+span{margin-top:.08em}
-.brand-statement em{font-style:normal;color:var(--gold)}
-.hero-copy .brand-statement+p{margin-top:20px;font-size:clamp(15px,1.75vw,24px)}
-.about-grid .brand-statement{font-size:clamp(58px,7.4vw,104px);margin-top:18px}
-@media(max-width:800px){.hero-copy .brand-statement{font-size:clamp(48px,8vw,66px)}.about-grid .brand-statement{font-size:clamp(58px,10vw,84px)}}
-@media(max-width:480px){.hero-copy .brand-statement{font-size:clamp(44px,13vw,60px)}}
+.hero-copy .brand-statement,.about-grid .brand-statement{display:flex;align-items:center;gap:.3em;font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;font-weight:500;font-size:clamp(27px,3.55vw,49px);letter-spacing:2px;line-height:1.4;white-space:nowrap}
+.signature-line{display:block;width:.55em;height:1px;background:var(--gold);flex-shrink:0;opacity:.9}
+.hero-copy .hero-topics{display:flex;align-items:center;gap:0;margin-top:12px;font-size:clamp(16px,2vw,27px)}
+.hero-topics>span{display:inline-flex;align-items:center}
+.hero-topics>span+span:before{content:"";display:block;width:1px;height:.65em;background:var(--gold);opacity:.65;margin:0 .65em}
+.about-grid .brand-statement{font-size:clamp(28px,4.6vw,64px);margin-top:18px}
+@media(max-width:800px){.hero-copy .brand-statement{font-size:clamp(27px,5vw,40px)}}

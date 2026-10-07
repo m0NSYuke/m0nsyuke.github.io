@@ -13,13 +13,17 @@ import '@fontsource/barlow-condensed/latin-700.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 const Lab=lazy(()=>import('./Lab'));
 const nav=[['works','作品'],['notes','知识与笔记'],['lab','实验室'],['about','关于']];
-const fallbackSettings={name:'m0NSYuke',tagline:'PERCEPTION INTO ACTION',description:'VLA · WAM · 视频生成',bio:'我关注 VLA、WAM 与视频生成。',github:'',email:'',university:'',major:'',educationPeriod:'',xiaohongshu:''};
+const fallbackSettings={name:'m0NSYuke',tagline:'从理解 到行动',description:'VLA · WAM · 视频生成',bio:'我关注 VLA、WAM 与视频生成。',github:'',email:'',university:'',major:'',educationPeriod:'',xiaohongshu:''};
 const getRoute=()=>window.location.hash.slice(1)||'home';
 const formatDate=date=>date.replaceAll('-','.');
 function SectionTitle({number,title,subtitle,link}) {return <div className="section-title"><div><span className="section-number mono">{number}</span><h2>{title}</h2></div>{link?<a href={link} className="section-caption mono">{subtitle}<ArrowUpRight size={16}/></a>:<span className="section-caption mono">{subtitle}</span>}</div>;}
 function BrandStatement({as:Heading='h2',text}) {
-  const signature=!text||text==='PERCEPTION INTO ACTION'||text==='从理解，到行动。';
-  return <Heading className="brand-statement">{signature?<><span>PERCEPTION</span><span>INTO <em>ACTION</em></span></>:text}</Heading>;
+  const signature=!text||['从理解 到行动','从理解，到行动。','PERCEPTION INTO ACTION'].includes(text);
+  return <Heading className="brand-statement" aria-label={signature?'从理解到行动':undefined}>{signature?<><span>从理解</span><i className="signature-line" aria-hidden="true"/><span>到行动</span></>:text}</Heading>;
+}
+function ResearchTopics({text}) {
+  const topics=(text||'').split(/\s*[·|]\s*/).filter(Boolean);
+  return <p className="hero-topics">{topics.map((topic,index)=><span key={index}>{topic}</span>)}</p>;
 }
 function Header({route,onSearch,searchRef}) {
   const [menu,setMenu]=useState(false),icon=useAnimationControls(),reduced=useReducedMotion();
@@ -30,7 +34,7 @@ function Header({route,onSearch,searchRef}) {
 function Hero({settings,reduced}) {
   const x=useMotionValue(0),y=useMotionValue(0);const sx=useSpring(x,{stiffness:75,damping:22}),sy=useSpring(y,{stiffness:75,damping:22});const rotation=useTransform(sx,[-14,14],[-2,2]);
   return <section className="hero"><div className="masthead"><motion.h1 initial={reduced?false:{opacity:0,y:26}} animate={{opacity:1,y:0}} transition={{duration:.9,ease:[.22,1,.36,1]}}>m0NSYuke</motion.h1></div>
-    <div className="hero-intro"><Reveal className="hero-copy"><BrandStatement text={settings.tagline}/><p>{settings.description}</p><a className="outline-button" href="#notes">探索知识 <ArrowRight size={20}/></a></Reveal><Reveal className="terminal mono" delay={.1}><p><span>&gt;</span> whoami</p><p>m0NSYuke / learning in public</p><p className="terminal-command"><span>&gt;</span> open ./knowledge</p><span className={`terminal-caret ${reduced?'still':''}`} aria-hidden="true"/></Reveal><div className="hero-art" onPointerMove={e=>{if(reduced||e.pointerType==='touch')return;const r=e.currentTarget.getBoundingClientRect();x.set((e.clientX-r.left-r.width/2)/r.width*28);y.set((e.clientY-r.top-r.height/2)/r.height*20);}} onPointerLeave={()=>{x.set(0);y.set(0);}}><motion.img src={asset('hero-sculpture.png')} alt="金色线框扭转雕塑" style={{x:sx,y:sy,rotate:rotation}} animate={reduced?{}:{scale:[1,1.025,1]}} transition={{duration:9,repeat:Infinity,ease:'easeInOut'}}/><span className="art-coordinate mono">x: idea<br/>y: code<br/>z: reality</span></div></div>
+    <div className="hero-intro"><Reveal className="hero-copy"><BrandStatement text={settings.tagline}/><ResearchTopics text={settings.description}/><a className="outline-button" href="#notes">探索知识 <ArrowRight size={20}/></a></Reveal><Reveal className="terminal mono" delay={.1}><p><span>&gt;</span> whoami</p><p>m0NSYuke / learning in public</p><p className="terminal-command"><span>&gt;</span> open ./knowledge</p><span className={`terminal-caret ${reduced?'still':''}`} aria-hidden="true"/></Reveal><div className="hero-art" onPointerMove={e=>{if(reduced||e.pointerType==='touch')return;const r=e.currentTarget.getBoundingClientRect();x.set((e.clientX-r.left-r.width/2)/r.width*28);y.set((e.clientY-r.top-r.height/2)/r.height*20);}} onPointerLeave={()=>{x.set(0);y.set(0);}}><motion.img src={asset('hero-sculpture.png')} alt="金色线框扭转雕塑" style={{x:sx,y:sy,rotate:rotation}} animate={reduced?{}:{scale:[1,1.025,1]}} transition={{duration:9,repeat:Infinity,ease:'easeInOut'}}/><span className="art-coordinate mono">x: idea<br/>y: code<br/>z: reality</span></div></div>
   </section>;
 }
 function ArticleRow({item,large=false}) {return <a className={`article-row ${large?'large':''}`} href={`#article/${item.id}`}><div className="article-thumb"><img src={asset(item.image||'note-wave.png')} alt="" loading="lazy"/></div><div className="article-text"><span className="article-tag mono">{item.tag}</span><h3>{item.title}</h3><p>{item.summary}</p></div><time className="mono" dateTime={item.date}>{formatDate(item.date)}</time><ArrowUpRight className="row-arrow" size={20}/></a>;}
