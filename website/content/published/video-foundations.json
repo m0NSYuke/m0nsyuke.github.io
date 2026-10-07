@@ -1,0 +1,12 @@
+{
+  "id": "video-foundations",
+  "kind": "article",
+  "section": "foundation",
+  "title": "视频生成：理解时间与运动",
+  "summary": "从图像表征到时序建模，为论文阅读与实践建立学习路线。",
+  "tag": "视频生成",
+  "date": "2026-10-08",
+  "image": "note-wave.png",
+  "status": "published",
+  "sample": true
+}

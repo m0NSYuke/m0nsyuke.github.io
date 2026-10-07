@@ -1,0 +1,12 @@
+{
+  "id": "wam-foundations",
+  "kind": "article",
+  "section": "foundation",
+  "title": "WAM：连接预测与行动",
+  "summary": "围绕所研究的 WAM 模型，整理状态、动作与预测之间的问题。",
+  "tag": "WAM",
+  "date": "2026-10-08",
+  "image": "note-spiral.png",
+  "status": "published",
+  "sample": true
+}

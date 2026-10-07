@@ -1,0 +1,10 @@
+node_modules/
+dist/
+data/
+.env
+.env.*.local
+*.log
+content/drafts/
+public/data/content.json
+public/rss.xml
+public/.nojekyll

@@ -1,0 +1,30 @@
+{
+  "name": "website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:pages",
+    "dev:pages": "node scripts/build-pages-content.mjs && vite --mode pages --host 127.0.0.1 --port 4174 --strictPort",
+    "build": "npm run build:pages",
+    "build:pages": "node scripts/build-pages-content.mjs && vite build --mode pages && node scripts/prepare-sites-build.mjs",
+    "test": "npm run test:pages",
+    "test:pages": "node --test tests/pages-content.test.mjs tests/sites-worker.test.mjs",
+    "preview:pages": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
+    "start": "npm run preview:pages",
+    "test:sites": "node --test tests/sites-worker.test.mjs"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "@vitejs/plugin-react": "5.0.4",
+    "dompurify": "^3.4.15",
+    "marked": "^18.0.13",
+    "motion": "^14.0.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "three": "^0.186.0",
+    "vite": "6.4.2"
+  }
+}

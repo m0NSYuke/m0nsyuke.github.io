@@ -1,0 +1,6 @@
+website/node_modules/
+website/dist/
+website/data/
+website/content/drafts/
+.env
+*.log
