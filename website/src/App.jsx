@@ -8,6 +8,7 @@ import Admin from './Admin';
 import Search from './Search';
 import Reveal from './Reveal';
 import ProfileTimeline from './ProfileTimeline';
+import HomeRipple from './HomeRipple';
 import Knowledge, {DirectionCards} from './Knowledge';
 import '@fontsource/barlow-condensed/latin-700.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
@@ -33,7 +34,7 @@ function Header({route,onSearch,searchRef}) {
 }
 function Hero({settings,reduced}) {
   const x=useMotionValue(0),y=useMotionValue(0);const sx=useSpring(x,{stiffness:75,damping:22}),sy=useSpring(y,{stiffness:75,damping:22});const rotation=useTransform(sx,[-14,14],[-2,2]);
-  return <section className="hero"><div className="masthead"><motion.h1 initial={reduced?false:{opacity:0,y:26}} animate={{opacity:1,y:0}} transition={{duration:.9,ease:[.22,1,.36,1]}}>m0NSYuke</motion.h1></div>
+  return <section className="hero"><HomeRipple reduced={reduced}/><div className="masthead"><motion.h1 initial={reduced?false:{opacity:0,y:26}} animate={{opacity:1,y:0}} transition={{duration:.9,ease:[.22,1,.36,1]}}>m0NSYuke</motion.h1></div>
     <div className="hero-intro"><Reveal className="hero-copy"><BrandStatement text={settings.tagline}/><ResearchTopics text={settings.description}/><a className="outline-button" href="#notes">探索知识 <ArrowRight size={20}/></a></Reveal><Reveal className="terminal mono" delay={.1}><p><span>&gt;</span> whoami</p><p>m0NSYuke / learning in public</p><p className="terminal-command"><span>&gt;</span> open ./knowledge</p><span className={`terminal-caret ${reduced?'still':''}`} aria-hidden="true"/></Reveal><div className="hero-art" onPointerMove={e=>{if(reduced||e.pointerType==='touch')return;const r=e.currentTarget.getBoundingClientRect();x.set((e.clientX-r.left-r.width/2)/r.width*28);y.set((e.clientY-r.top-r.height/2)/r.height*20);}} onPointerLeave={()=>{x.set(0);y.set(0);}}><motion.img src={asset('hero-sculpture.png')} alt="金色线框扭转雕塑" style={{x:sx,y:sy,rotate:rotation}} animate={reduced?{}:{scale:[1,1.025,1]}} transition={{duration:9,repeat:Infinity,ease:'easeInOut'}}/><span className="art-coordinate mono">x: idea<br/>y: code<br/>z: reality</span></div></div>
   </section>;
 }

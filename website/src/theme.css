@@ -37,3 +37,10 @@
 .hero-topics>span+span:before{content:"";display:block;width:1px;height:.65em;background:var(--gold);opacity:.65;margin:0 .65em}
 .about-grid .brand-statement{font-size:clamp(28px,4.6vw,64px);margin-top:18px}
 @media(max-width:800px){.hero-copy .brand-statement{font-size:clamp(27px,5vw,40px)}}
+
+/* Ambient surface stays behind content and never intercepts input. */
+.hero{position:relative;isolation:isolate}
+.home-ripple{position:absolute;inset:0 -2%;z-index:-1;pointer-events:none;overflow:hidden;opacity:.88;mask-image:linear-gradient(to bottom,transparent 24%,#000 44%,#000 82%,transparent 100%)}
+.home-ripple:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#10110f80,transparent 52%,#10110f35)}
+.home-ripple canvas{display:block;width:100%;height:100%}
+@media(max-width:800px){.home-ripple{opacity:.68;inset:0;mask-image:linear-gradient(to bottom,transparent 15%,#000 45%,#000 82%,transparent)}}
