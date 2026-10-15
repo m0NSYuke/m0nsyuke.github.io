@@ -4,7 +4,9 @@ import DOMPurify from 'dompurify';
 
 const escape = text => String(text).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const plain = html => html.replace(/<[^>]*>/g, '').replace(/&[a-z#0-9]+;/gi, ' ');
-export const slugify = text => text.trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').toLowerCase();
+import {slugify} from './site';
+import {t} from './i18n';
+export {slugify};
 
 // KaTeX and highlight.js are only fetched for articles that use them.
 async function extensions(source) {
@@ -49,7 +51,7 @@ export async function renderArticle(item) {
   const used = new Map();
   const headings = [];
   const parser = new Marked();
-  parser.use(markedFootnote({description: '脚注', backRefLabel: '回到正文'}));
+  parser.use(markedFootnote({description: t('article.footnotes'), backRefLabel: t('article.backref')}));
   extra.forEach(extension => parser.use(extension));
   parser.use({renderer: {
     heading({tokens, depth}) {
@@ -63,20 +65,20 @@ export async function renderArticle(item) {
       used.set(id, count + 1);
       if (count) id = `${id}-${count}`;
       if (level <= 3) headings.push({id, text, level});
-      return `<h${level} id="${id}" class="prose-heading">${html}<a class="heading-anchor" href="#${item.kind}/${item.id}/${id}" data-anchor="${id}" aria-label="复制「${escape(text)}」的链接">#</a></h${level}>`;
+      return `<h${level} id="${id}" class="prose-heading">${html}<a class="heading-anchor" href="#${item.kind}/${item.id}/${id}" data-anchor="${id}" aria-label="${escape(t('article.anchor', text))}">#</a></h${level}>`;
     },
     code({text, lang}) {
       const language = (lang || '').split(/\s/)[0].toLowerCase();
       const known = hljs && language && hljs.getLanguage(language);
       const body = known ? hljs.highlight(text, {language}).value : escape(text);
-      return `<div class="code-block"><div class="code-bar"><span>${escape(language || 'text')}</span><button type="button" class="copy-code">复制</button></div><pre><code class="hljs${language ? ` language-${escape(language)}` : ''}">${body}</code></pre></div>`;
+      return `<div class="code-block"><div class="code-bar"><span>${escape(language || 'text')}</span><button type="button" class="copy-code">${escape(t('article.copy'))}</button></div><pre><code class="hljs${language ? ` language-${escape(language)}` : ''}">${body}</code></pre></div>`;
     },
     image({href, title, text}) {
       const caption = title || text;
       return `<figure><img src="${escape(href)}" alt="${escape(text)}" loading="lazy" decoding="async">${caption ? `<figcaption>${escape(caption)}</figcaption>` : ''}</figure>`;
     },
     table(token) {
-      return `<div class="table-scroll" tabindex="0" role="region" aria-label="表格">${defaultTable.call(this, token)}</div>`;
+      return `<div class="table-scroll" tabindex="0" role="region" aria-label="${escape(t('article.table'))}">${defaultTable.call(this, token)}</div>`;
     },
   }});
   const html = DOMPurify.sanitize(parser.parse(source), {USE_PROFILES: {html: true, mathMl: true, svg: true}, ADD_ATTR: ['data-anchor', 'tabindex', 'aria-label', 'role', 'target']});

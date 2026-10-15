@@ -5,7 +5,7 @@ import {onThemeChange} from './theme';
 
 export function startScene({host, parameters, rotate, reduced, accent, onError, onSlow}) {
   let renderer;
-  try { renderer = new WebGLRenderer({antialias: window.devicePixelRatio < 1.5, alpha: true, powerPreference: 'low-power'}); } catch { onError('当前设备无法使用 WebGL。你仍然可以浏览笔记。'); return undefined; }
+  try { renderer = new WebGLRenderer({antialias: window.devicePixelRatio < 1.5, alpha: true, powerPreference: 'low-power'}); } catch { onError(); return undefined; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   // Software rendering (no GPU) would keep the CPU busy, so the surface starts still there.
   const gl = renderer.getContext(), info = gl.getExtension('WEBGL_debug_renderer_info');
