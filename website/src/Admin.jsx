@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Plus, SignOut, Eye, FloppyDisk, PaperPlaneTilt, ArrowLeft } from '@phosphor-icons/react';
 import { request } from './api';
-import { RichText } from './Content';
+import { useMemo } from 'react';
+import { Marked } from 'marked';
+import DOMPurify from 'dompurify';
+import './styles/admin.css';
+
+const parser = new Marked();
+function RichText({content = ''}) {
+  const html = useMemo(() => DOMPurify.sanitize(parser.parse(content), {USE_PROFILES: {html: true}}), [content]);
+  return <div dangerouslySetInnerHTML={{__html: html}}/>;
+}
 
 const kinds={article:'技术笔记',project:'作品',log:'工作日志'};
 const blank = kind => ({id:`${kind}-${Date.now().toString(36)}`,kind,section:'blog',title:'',summary:'',body:'',tag:'VLA',date:new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'}),image:kind==='article'?'note-wave.png':kind==='project'?'featured-morph.png':'',status:'draft',sample:false});

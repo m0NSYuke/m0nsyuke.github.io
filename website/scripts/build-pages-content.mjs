@@ -42,5 +42,8 @@ export function buildPages({contentRoot=resolve(root,'content'),outputRoot=resol
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   const data=buildPages();
+  // Metadata without bodies ships inside the app bundle so the first paint needs no fetch.
+  const index={settings:data.settings,items:data.items.map(({body,...item})=>({...item,chars:body.replace(/\s+/g,'').length,sections:[...body.matchAll(/^##\s+(.+)$/gm)].map(match=>match[1].trim())}))};
+  writeFileSync(resolve(root,'src/generated-content.json'),JSON.stringify(index));
   console.log(`Prepared ${data.items.length} published entries and RSS for GitHub Pages.`);
 }
