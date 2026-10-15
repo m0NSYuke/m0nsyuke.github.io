@@ -1,0 +1,205 @@
+/* Design tokens. Components reference these only; see DESIGN.md. */
+
+:root {
+  /* Color: dark is the default; light overrides below. */
+  --color-bg: #121110;
+  --color-surface: #1a1917;
+  --color-surface-raised: #242220;
+  --color-text-primary: #ece8df;
+  --color-text-secondary: #b8b2a7;
+  --color-text-tertiary: #948e84;
+  --color-border: #2f2c28;
+  --color-border-strong: #77716a;
+  --color-accent: #d9a95f;
+  --color-accent-hover: #e6bd7c;
+  --color-on-accent: #1a1206;
+  --color-focus-ring: #ebc684;
+  --color-success: #9fc48c;
+  --color-danger: #f0a08b;
+  --color-scrim: rgb(10 9 8 / 72%);
+  --color-glass: rgb(18 17 16 / 72%);
+  --color-selection: rgb(217 169 95 / 32%);
+  --color-mark: rgb(217 169 95 / 28%);
+  --color-art-line: 217 169 95; /* RGB triplet for canvas strokes */
+  --art-filter: none; /* transparent line art (hero sculpture, logo) */
+  --logo-filter: none;
+  --shadow-1: none;
+  --shadow-2: none;
+  --code-keyword: #e0a979;
+  --code-string: #a9c98f;
+  --code-number: #d9b7f0;
+  --code-comment: #8f8a80;
+  --code-title: #8fc3d8;
+  --code-attr: #e6c27a;
+  color-scheme: dark;
+
+  /* Type */
+  --font-sans: Inter, "PingFang SC", "HarmonyOS Sans SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-serif: Newsreader, "Songti SC", "Noto Serif SC", "Source Han Serif SC", "Source Han Serif", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-wordmark: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+
+  --text-mono-xs: 11px;
+  --leading-mono-xs: 16px;
+  --text-caption: 12px;
+  --leading-caption: 16px;
+  --text-label: 13px;
+  --leading-label: 18px;
+  --text-body-sm: 15px;
+  --leading-body-sm: 24px;
+  --text-body: 17px;
+  --leading-body: 30px;
+  --text-title-sm: 20px;
+  --leading-title-sm: 28px;
+  --text-title: 28px;
+  --leading-title: 36px;
+  --text-headline: 40px;
+  --leading-headline: 48px;
+  --text-display: clamp(56px, 8vw, 112px);
+  --leading-display: 1.05;
+  --text-wordmark: clamp(96px, 22vw, 320px);
+  --leading-wordmark: 0.82;
+  --tracking-mono: 0.08em;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Space: 4px base */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-11: 160px;
+  --section-gap: 80px;
+
+  /* Radius */
+  --radius-none: 0;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --content-max: 1200px;
+  --gutter: 20px;
+  --grid-gap: 24px;
+  --measure: 680px;
+  --header-height: 64px;
+  --tap: 44px;
+
+  /* State layers */
+  --state-hover: 8%;
+  --state-pressed: 12%;
+  --opacity-disabled: 0.38;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized-decel: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-emphasized-accel: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: linear(0, 0.067, 0.22, 0.401, 0.575, 0.725, 0.842, 0.927, 0.983, 1.017, 1.033, 1.038, 1.037, 1.031, 1.024, 1.017, 1.011, 1.007, 1.003, 1.001, 1, 0.999, 0.999, 0.999, 1);
+  --dur-short: 150ms;
+  --dur-medium: 250ms;
+  --dur-long: 400ms;
+  --reveal-distance: 24px;
+  --page-distance: 8px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+    --header-height: 72px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --gutter: 48px;
+    --section-gap: 128px;
+  }
+}
+
+/* Light palette: follows the system unless the visitor chose dark. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --color-bg: #f6f4ef;
+    --color-surface: #eeeae2;
+    --color-surface-raised: #fbfaf7;
+    --color-text-primary: #1c1a17;
+    --color-text-secondary: #4d4840;
+    --color-text-tertiary: #69635a;
+    --color-border: #ddd7cb;
+    --color-border-strong: #8c8578;
+    --color-accent: #875811;
+    --color-accent-hover: #6c460c;
+    --color-on-accent: #fffaf0;
+    --color-focus-ring: #875811;
+    --color-success: #3b6a29;
+    --color-danger: #a8391f;
+    --color-scrim: rgb(28 26 23 / 36%);
+    --color-glass: rgb(246 244 239 / 72%);
+    --color-selection: rgb(135 88 17 / 22%);
+    --color-mark: rgb(135 88 17 / 18%);
+    --color-art-line: 135 88 17;
+    --art-filter: brightness(0.5) saturate(1.4) contrast(1.15);
+    --logo-filter: invert(0.9);
+    --code-keyword: #9a3f12;
+    --code-string: #3b6a29;
+    --code-number: #6b3fa0;
+    --code-comment: #6b655b;
+    --code-title: #1f5f7a;
+    --code-attr: #7a5208;
+    --shadow-1: 0 1px 2px rgb(28 26 23 / 6%), 0 1px 1px rgb(28 26 23 / 4%);
+    --shadow-2: 0 12px 32px rgb(28 26 23 / 10%), 0 2px 6px rgb(28 26 23 / 6%);
+    color-scheme: light;
+  }
+}
+
+:root[data-theme="light"] {
+  --color-bg: #f6f4ef;
+  --color-surface: #eeeae2;
+  --color-surface-raised: #fbfaf7;
+  --color-text-primary: #1c1a17;
+  --color-text-secondary: #4d4840;
+  --color-text-tertiary: #69635a;
+  --color-border: #ddd7cb;
+  --color-border-strong: #8c8578;
+  --color-accent: #875811;
+  --color-accent-hover: #6c460c;
+  --color-on-accent: #fffaf0;
+  --color-focus-ring: #875811;
+  --color-success: #3b6a29;
+  --color-danger: #a8391f;
+  --color-scrim: rgb(28 26 23 / 36%);
+  --color-glass: rgb(246 244 239 / 72%);
+  --color-selection: rgb(135 88 17 / 22%);
+  --color-mark: rgb(135 88 17 / 18%);
+  --color-art-line: 135 88 17;
+  --art-filter: brightness(0.5) saturate(1.4) contrast(1.15);
+  --logo-filter: invert(0.9);
+  --code-keyword: #9a3f12;
+  --code-string: #3b6a29;
+  --code-number: #6b3fa0;
+  --code-comment: #6b655b;
+  --code-title: #1f5f7a;
+  --code-attr: #7a5208;
+  --shadow-1: 0 1px 2px rgb(28 26 23 / 6%), 0 1px 1px rgb(28 26 23 / 4%);
+  --shadow-2: 0 12px 32px rgb(28 26 23 / 10%), 0 2px 6px rgb(28 26 23 / 6%);
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-medium: 150ms;
+    --dur-long: 150ms;
+    --reveal-distance: 0px;
+    --page-distance: 0px;
+  }
+}
