@@ -1,15 +1,17 @@
 import {useEffect, useRef, useState} from 'react';
 import {ArrowRight, ArrowUpRight} from '@phosphor-icons/react';
-import HomeRipple from '../components/HomeRipple';
+import Morph from '../components/Morph';
 import Picture from '../components/Picture';
 import Reveal from '../components/Reveal';
-import {DirectionCards, NoteRow, Roadmap} from '../components/Notes';
-import {articles, INTRO, settings} from '../lib/site';
+import {DirectionCards, KnowledgeMap, NoteGrid, TagPill, Timeline} from '../components/Notes';
+import {articles, directions} from '../lib/site';
+import {useT} from '../lib/i18n';
 
 const LINES = [['cmd', 'whoami'], ['out', 'm0NSYuke / learning in public'], ['cmd', 'open ./knowledge']];
 
 // Types once per browser session; otherwise (and with reduced motion) shows the full text.
 function Terminal() {
+  const t = useT();
   const [typed, setTyped] = useState(() => {
     try { return sessionStorage.getItem('terminal-typed') ? Infinity : 0; } catch { return Infinity; }
   });
@@ -22,7 +24,7 @@ function Terminal() {
     return () => clearTimeout(timer);
   }, [typed, total]);
   let remaining = typed;
-  return <div className="terminal" aria-label="终端：whoami，输出 m0NSYuke / learning in public；open ./knowledge" role="img">
+  return <div className="terminal" aria-label={t('terminal.label')} role="img">
     {LINES.map(([kind, text], index) => {
       const shown = text.slice(0, Math.max(0, remaining));
       remaining -= text.length;
@@ -60,18 +62,17 @@ function HeroArt() {
 }
 
 function Hero() {
+  const t = useT();
   return <section className="hero" aria-labelledby="hero-title">
-    <HomeRipple/>
     <div className="container">
       <h1 id="hero-title" className="wordmark">m0NSYuke</h1>
       <div className="hero-grid">
         <div className="hero-copy">
-          <p className="hero-tagline">从理解到行动</p>
-          <p className="hero-intro">{INTRO}</p>
-          <ul className="hero-topics" role="list" aria-label="研究方向">{settings.description.split(/\s*[·|]\s*/).filter(Boolean).map(topic => <li key={topic}>{topic}</li>)}</ul>
+          <p className="hero-tagline">{t('tagline')}</p>
+          <ul className="hero-topics" role="list" aria-label={t('hero.topics')}>{directions.map(direction => <li key={direction.tag}><TagPill tag={direction.tag}/></li>)}</ul>
           <div className="button-row">
-            <a className="button button-primary" href="#notes">阅读笔记<ArrowRight size={18} aria-hidden="true"/></a>
-            <a className="button button-secondary" href="#about">关于我</a>
+            <a className="button button-primary" href="#notes">{t('hero.read')}<ArrowRight size={18} aria-hidden="true"/></a>
+            <a className="button button-secondary" href="#about">{t('hero.about')}</a>
           </div>
         </div>
         <Terminal/>
@@ -82,39 +83,32 @@ function Hero() {
 }
 
 export default function Home() {
+  const t = useT();
   return <>
     <Hero/>
     <section className="section container" aria-labelledby="directions-title">
       <Reveal className="section-head">
-        <h2 id="directions-title" className="section-title">研究方向</h2>
-        <p className="section-lede">三个方向，各自从一份学习框架开始。</p>
+        <h2 id="directions-title" className="section-title">{t('home.directions')}</h2>
+        <p className="section-lede">{t('home.directionsLede')}</p>
       </Reveal>
-      <Reveal>
-        <a className="feature-banner" href="#notes" aria-label="查看全部研究方向的笔记">
-          <Picture file="featured-morph.png" alt="" sizes="(min-width: 1296px) 1200px, calc(100vw - 2 * var(--gutter))" width={1200} height={466}/>
-        </a>
-      </Reveal>
-      <Reveal><DirectionCards/></Reveal>
+      <Reveal><Morph/></Reveal>
+      <DirectionCards/>
     </section>
-    <section className="section container home-notes" aria-labelledby="notes-title">
-      <Reveal className="section-head">
-        <h2 id="notes-title" className="section-title">最新笔记</h2>
-        <a className="text-link" href="#notes">全部笔记<ArrowUpRight size={16} aria-hidden="true"/></a>
+    <section className="section container" aria-labelledby="notes-title">
+      <Reveal className="section-head section-head-row">
+        <h2 id="notes-title" className="section-title">{t('home.latest')}</h2>
+        <a className="text-link" href="#notes">{t('home.allNotes')}<ArrowUpRight size={16} aria-hidden="true"/></a>
       </Reveal>
-      <Reveal as="ul" className="note-list" role="list">
-        {articles.slice(0, 3).map(item => <li key={item.id}><NoteRow item={item}/></li>)}
-      </Reveal>
-      <Reveal><Roadmap/></Reveal>
+      <NoteGrid notes={articles.slice(0, 3)}/>
     </section>
+    <div className="section container"><KnowledgeMap/></div>
     <section className="section container home-about" aria-labelledby="about-title">
-      <Reveal className="home-about-inner">
-        <h2 id="about-title" className="section-title">关于我</h2>
-        <div>
-          <p className="home-about-bio">{settings.bio}</p>
-          <p className="home-about-facts">{[settings.university, settings.major].filter(Boolean).join(' · ')}</p>
-          <a className="button button-secondary" href="#about">关于我<ArrowRight size={18} aria-hidden="true"/></a>
-        </div>
+      <Reveal className="home-about-head">
+        <h2 id="about-title" className="section-title">{t('home.about')}</h2>
+        <p className="section-lede">{t('home.aboutLede')}</p>
+        <a className="button button-secondary" href="#about">{t('hero.about')}<ArrowRight size={18} aria-hidden="true"/></a>
       </Reveal>
+      <Timeline/>
     </section>
   </>;
 }
