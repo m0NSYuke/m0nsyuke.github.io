@@ -1,0 +1,59 @@
+{
+  "hero-sculpture": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      360,
+      440,
+      560,
+      800,
+      1120
+    ]
+  },
+  "featured-morph": {
+    "width": 2012,
+    "height": 782,
+    "widths": [
+      640,
+      960,
+      1280,
+      1800
+    ]
+  },
+  "note-wave": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      160,
+      480,
+      800
+    ]
+  },
+  "note-architecture": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      160,
+      480,
+      800
+    ]
+  },
+  "note-spiral": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      160,
+      480,
+      800
+    ]
+  },
+  "wycx-logo": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      96,
+      192,
+      480
+    ]
+  }
+}
