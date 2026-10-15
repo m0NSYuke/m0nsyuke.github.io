@@ -5,21 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "npm run dev:pages",
-    "dev:pages": "node scripts/build-pages-content.mjs && vite --mode pages --host 127.0.0.1 --port 4174 --strictPort",
+    "dev:pages": "node scripts/build-pages-content.mjs && node scripts/build-fonts.mjs && vite --mode pages --host 127.0.0.1 --port 4174 --strictPort",
     "build": "npm run build:pages",
-    "build:pages": "node scripts/build-pages-content.mjs && vite build --mode pages && node scripts/postbuild-pages.mjs && node scripts/prepare-sites-build.mjs",
+    "build:pages": "node scripts/build-pages-content.mjs && node scripts/build-fonts.mjs && vite build --mode pages && node scripts/postbuild-pages.mjs && node scripts/prepare-sites-build.mjs",
     "test": "npm run test:pages",
     "test:pages": "node --test tests/pages-content.test.mjs tests/sites-worker.test.mjs",
     "preview:pages": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
     "start": "npm run preview:pages",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "images": "node scripts/optimize-images.mjs"
+    "images": "node scripts/optimize-images.mjs",
+    "fonts": "node scripts/build-fonts.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
-    "@fontsource/newsreader": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "@vitejs/plugin-react": "5.0.4",
     "dompurify": "^3.4.15",
@@ -34,6 +34,8 @@
     "vite": "6.4.2"
   },
   "devDependencies": {
-    "sharp": "^0.34.5"
+    "@expo-google-fonts/noto-serif-sc": "^0.4.4",
+    "sharp": "^0.34.5",
+    "subset-font": "^2.9.0"
   }
 }

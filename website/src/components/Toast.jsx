@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {t} from '../lib/i18n';
 
 const listeners = new Set();
 export function toast(message) {
@@ -22,7 +23,7 @@ export function Toaster() {
   </div>;
 }
 
-export async function copyText(text, done = '已复制') {
+export async function copyText(text, done = t('copied')) {
   try {
     await navigator.clipboard.writeText(text);
   } catch {

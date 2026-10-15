@@ -1,6 +1,7 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import {ArrowRight, MagnifyingGlass, X} from '@phosphor-icons/react';
-import {articleHref, directions, items, loadFullContent, sectionLabel} from '../lib/site';
+import {articleHref, directions, items, loadFullContent} from '../lib/site';
+import {directionName, noteSummary, noteTitle, tagLabel, useLang, useT} from '../lib/i18n';
 
 const CLOSE_MS = 150;
 
@@ -26,6 +27,7 @@ function excerpt(body, query) {
 }
 
 export default function Search({open, onClose, triggerRef}) {
+  const lang = useLang(), t = useT();
   const dialog = useRef(null), input = useRef(null), returnFocus = useRef(null);
   const [query, setQuery] = useState(''), [active, setActive] = useState(0), [bodies, setBodies] = useState({}), [closing, setClosing] = useState(false);
   const listId = useId();
@@ -55,7 +57,7 @@ export default function Search({open, onClose, triggerRef}) {
 
   const normalized = query.trim();
   const results = normalized ? items.map(item => {
-    const haystack = `${item.title} ${item.summary} ${item.tag}`.toLowerCase();
+    const haystack = `${item.title} ${item.summary} ${item.tag} ${noteTitle(item, lang)} ${noteSummary(item, lang)} ${tagLabel(item.tag, lang)}`.toLowerCase();
     const body = bodies[item.id] || '';
     const inMeta = haystack.includes(normalized.toLowerCase());
     const inBody = !inMeta && body.toLowerCase().includes(normalized.toLowerCase());
@@ -73,33 +75,33 @@ export default function Search({open, onClose, triggerRef}) {
 
   return <dialog ref={dialog} className={`search-dialog ${closing ? 'is-closing' : ''}`} aria-modal="true" aria-labelledby="search-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === dialog.current) onClose(); }}>
     <div className="search-panel">
-      <h2 id="search-title" className="visually-hidden">搜索网站</h2>
+      <h2 id="search-title" className="visually-hidden">{t('search.title')}</h2>
       <div className="search-field">
         <MagnifyingGlass size={20} aria-hidden="true"/>
-        <input ref={input} type="search" role="combobox" aria-expanded={results.length > 0} aria-controls={listId} aria-activedescendant={results.length ? `${listId}-${active}` : undefined} aria-autocomplete="list" aria-label="搜索笔记" placeholder="搜索笔记、方向或关键词" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={keydown} autoComplete="off" spellCheck="false"/>
-        <button type="button" className="icon-button" onClick={onClose} aria-label="关闭搜索"><X size={20} aria-hidden="true"/></button>
+        <input ref={input} type="search" role="combobox" aria-expanded={results.length > 0} aria-controls={listId} aria-activedescendant={results.length ? `${listId}-${active}` : undefined} aria-autocomplete="list" aria-label={t('search.input')} placeholder={t('search.placeholder')} value={query} onChange={event => setQuery(event.target.value)} onKeyDown={keydown} autoComplete="off" spellCheck="false"/>
+        <button type="button" className="icon-button" onClick={onClose} aria-label={t('search.close')}><X size={20} aria-hidden="true"/></button>
       </div>
       <div className="search-body">
         {normalized && results.length > 0 && <>
-          <p className="search-label" aria-live="polite">{results.length} 条结果</p>
-          <ul id={listId} role="listbox" aria-label="搜索结果" className="search-results">
+          <p className="search-label" aria-live="polite">{t('search.count', results.length)}</p>
+          <ul id={listId} role="listbox" aria-label={t('search.results')} className="search-results">
             {results.map(({item, snippet}, index) => <li key={item.id} id={`${listId}-${index}`} role="option" aria-selected={index === active} className="search-result" onClick={() => visit(item)} onMouseMove={() => setActive(index)}>
-              <span className="search-result-meta">{item.tag} · {sectionLabel(item.section)}</span>
-              <span className="search-result-title">{highlight(item.title, normalized)}</span>
-              <span className="search-result-summary">{highlight(snippet || item.summary, normalized)}</span>
+              <span className="search-result-meta">{tagLabel(item.tag, lang)} · {t(`section.${item.section}`)}</span>
+              <span className="search-result-title">{highlight(noteTitle(item, lang), normalized)}</span>
+              <span className="search-result-summary">{highlight(snippet || noteSummary(item, lang), normalized)}</span>
             </li>)}
           </ul>
         </>}
         {normalized && !results.length && <div className="search-empty">
-          <p className="search-empty-title" aria-live="polite">没有找到「{normalized}」</p>
-          <p>试试按研究方向浏览：</p>
+          <p className="search-empty-title" aria-live="polite">{t('search.none', normalized)}</p>
+          <p>{t('search.browse')}</p>
         </div>}
         {(!normalized || !results.length) && <ul className="search-directions" role="list">
-          {directions.map(direction => <li key={direction.tag}><a href={`#notes/${encodeURIComponent(direction.tag)}`} onClick={onClose}><strong>{direction.tag}</strong><span>{direction.name}</span><ArrowRight size={16} aria-hidden="true"/></a></li>)}
+          {directions.map(direction => <li key={direction.tag}><a href={`#notes/${encodeURIComponent(direction.tag)}`} onClick={onClose}><strong>{tagLabel(direction.tag, lang)}</strong><span>{directionName(direction, lang)}</span><ArrowRight size={16} aria-hidden="true"/></a></li>)}
         </ul>}
       </div>
       <footer className="search-foot" aria-hidden="true">
-        <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span><span><kbd>Enter</kbd> 打开</span><span><kbd>Esc</kbd> 关闭</span>
+        <span><kbd>↑</kbd><kbd>↓</kbd> {t('search.select')}</span><span><kbd>Enter</kbd> {t('search.open')}</span><span><kbd>Esc</kbd> {t('search.esc')}</span>
       </footer>
     </div>
   </dialog>;

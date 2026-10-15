@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>m0NSYuke · 从理解到行动</title>
     <meta name="description" content="m0NSYuke 的学习笔记：VLA、WAM 与视频生成。四川大学自动化专业，研究具身智能与视频生成。" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121110" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f4ef" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141413" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f5" />
     <meta name="color-scheme" content="dark light" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -27,8 +27,9 @@
     <meta name="twitter:description" content="m0NSYuke 的学习笔记：VLA、WAM 与视频生成。" />
     <meta name="twitter:image" content="https://m0nsyuke.github.io/og/default.png" />
     <script>
-      /* Apply the saved color theme before first paint to avoid a flash. */
+      /* Apply the saved color theme and language before first paint to avoid a flash. */
       try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+      try { var l = localStorage.getItem('lang') || (/^zh/i.test(navigator.language || 'zh') ? 'zh' : 'en'); document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN'; } catch (e) {}
     </script>
   </head>
   <body>

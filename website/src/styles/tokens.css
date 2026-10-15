@@ -2,22 +2,23 @@
 
 :root {
   /* Color: dark is the default; light overrides below. */
-  --color-bg: #121110;
-  --color-surface: #1a1917;
-  --color-surface-raised: #242220;
-  --color-text-primary: #ece8df;
-  --color-text-secondary: #b8b2a7;
-  --color-text-tertiary: #948e84;
-  --color-border: #2f2c28;
-  --color-border-strong: #77716a;
+  --color-bg: #141413;
+  --color-surface: #1f1e1d;
+  --color-surface-raised: #262624;
+  --color-text-primary: #faf9f5;
+  --color-text-secondary: #c2c0b6;
+  --color-text-tertiary: #9c9a92;
+  --color-border: #30302e;
+  --color-border-strong: #73726c;
   --color-accent: #d9a95f;
   --color-accent-hover: #e6bd7c;
   --color-on-accent: #1a1206;
   --color-focus-ring: #ebc684;
   --color-success: #9fc48c;
   --color-danger: #f0a08b;
-  --color-scrim: rgb(10 9 8 / 72%);
-  --color-glass: rgb(18 17 16 / 72%);
+  --color-scrim: rgb(10 10 9 / 72%);
+  --color-glass: rgb(20 20 19 / 70%);
+  --backdrop-alpha: 0.5; /* strength of the animated contour background */
   --color-selection: rgb(217 169 95 / 32%);
   --color-mark: rgb(217 169 95 / 28%);
   --color-art-line: 217 169 95; /* RGB triplet for canvas strokes */
@@ -35,7 +36,8 @@
 
   /* Type */
   --font-sans: Inter, "PingFang SC", "HarmonyOS Sans SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
-  --font-serif: Newsreader, "Songti SC", "Noto Serif SC", "Source Han Serif SC", "Source Han Serif", serif;
+  /* Display serif: a build-time subset of Noto Serif SC (Latin glyphs from Source Serif), close to Anthropic's serif headings. */
+  --font-serif: "m0 Serif", "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --font-wordmark: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
 
@@ -58,6 +60,18 @@
   --text-display: clamp(56px, 8vw, 112px);
   --leading-display: 1.05;
   --text-wordmark: clamp(96px, 22vw, 320px);
+  /* Fluid editorial scale, after claude.com: serif headlines, generous body. */
+  --text-display-1: clamp(40px, 3.2vw + 26px, 72px);
+  --leading-display-1: 1.1;
+  --text-headline-1: clamp(34px, 2vw + 26px, 52px);
+  --leading-headline-1: 1.15;
+  --text-headline-2: clamp(28px, 1.4vw + 22px, 44px);
+  --leading-headline-2: 1.2;
+  --text-headline-3: clamp(24px, 0.8vw + 20px, 32px);
+  --leading-headline-3: 1.25;
+  --text-body-lg: clamp(18px, 0.3vw + 17px, 21px);
+  --leading-body-lg: 1.65;
+  --tracking-display: -0.01em;
   --leading-wordmark: 0.82;
   --tracking-mono: 0.08em;
   --weight-regular: 400;
@@ -81,8 +95,9 @@
 
   /* Radius */
   --radius-none: 0;
-  --radius-sm: 6px;
+  --radius-sm: 8px;
   --radius-md: 12px;
+  --radius-lg: 20px;
   --radius-pill: 999px;
 
   /* Layout */
@@ -108,6 +123,7 @@
   --dur-short: 150ms;
   --dur-medium: 250ms;
   --dur-long: 400ms;
+  --dur-reveal: 900ms;
   --reveal-distance: 24px;
   --page-distance: 8px;
 }
@@ -129,22 +145,23 @@
 /* Light palette: follows the system unless the visitor chose dark. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --color-bg: #f6f4ef;
-    --color-surface: #eeeae2;
-    --color-surface-raised: #fbfaf7;
-    --color-text-primary: #1c1a17;
-    --color-text-secondary: #4d4840;
-    --color-text-tertiary: #69635a;
-    --color-border: #ddd7cb;
-    --color-border-strong: #8c8578;
+    --color-bg: #faf9f5;
+    --color-surface: #f0eee6;
+    --color-surface-raised: #ffffff;
+    --color-text-primary: #141413;
+    --color-text-secondary: #4d4c48;
+    --color-text-tertiary: #686761;
+    --color-border: #dedcd1;
+    --color-border-strong: #87867f;
     --color-accent: #875811;
     --color-accent-hover: #6c460c;
     --color-on-accent: #fffaf0;
     --color-focus-ring: #875811;
     --color-success: #3b6a29;
     --color-danger: #a8391f;
-    --color-scrim: rgb(28 26 23 / 36%);
-    --color-glass: rgb(246 244 239 / 72%);
+    --color-scrim: rgb(20 20 19 / 36%);
+    --color-glass: rgb(250 249 245 / 72%);
+    --backdrop-alpha: 0.5;
     --color-selection: rgb(135 88 17 / 22%);
     --color-mark: rgb(135 88 17 / 18%);
     --color-art-line: 135 88 17;
@@ -156,29 +173,30 @@
     --code-comment: #6b655b;
     --code-title: #1f5f7a;
     --code-attr: #7a5208;
-    --shadow-1: 0 1px 2px rgb(28 26 23 / 6%), 0 1px 1px rgb(28 26 23 / 4%);
-    --shadow-2: 0 12px 32px rgb(28 26 23 / 10%), 0 2px 6px rgb(28 26 23 / 6%);
+    --shadow-1: 0 1px 2px rgb(20 20 19 / 6%), 0 1px 1px rgb(20 20 19 / 4%);
+    --shadow-2: 0 12px 32px rgb(20 20 19 / 10%), 0 2px 6px rgb(20 20 19 / 6%);
     color-scheme: light;
   }
 }
 
 :root[data-theme="light"] {
-  --color-bg: #f6f4ef;
-  --color-surface: #eeeae2;
-  --color-surface-raised: #fbfaf7;
-  --color-text-primary: #1c1a17;
-  --color-text-secondary: #4d4840;
-  --color-text-tertiary: #69635a;
-  --color-border: #ddd7cb;
-  --color-border-strong: #8c8578;
+  --color-bg: #faf9f5;
+  --color-surface: #f0eee6;
+  --color-surface-raised: #ffffff;
+  --color-text-primary: #141413;
+  --color-text-secondary: #4d4c48;
+  --color-text-tertiary: #686761;
+  --color-border: #dedcd1;
+  --color-border-strong: #87867f;
   --color-accent: #875811;
   --color-accent-hover: #6c460c;
   --color-on-accent: #fffaf0;
   --color-focus-ring: #875811;
   --color-success: #3b6a29;
   --color-danger: #a8391f;
-  --color-scrim: rgb(28 26 23 / 36%);
-  --color-glass: rgb(246 244 239 / 72%);
+  --color-scrim: rgb(20 20 19 / 36%);
+  --color-glass: rgb(250 249 245 / 72%);
+  --backdrop-alpha: 0.5;
   --color-selection: rgb(135 88 17 / 22%);
   --color-mark: rgb(135 88 17 / 18%);
   --color-art-line: 135 88 17;
@@ -190,8 +208,8 @@
   --code-comment: #6b655b;
   --code-title: #1f5f7a;
   --code-attr: #7a5208;
-  --shadow-1: 0 1px 2px rgb(28 26 23 / 6%), 0 1px 1px rgb(28 26 23 / 4%);
-  --shadow-2: 0 12px 32px rgb(28 26 23 / 10%), 0 2px 6px rgb(28 26 23 / 6%);
+  --shadow-1: 0 1px 2px rgb(20 20 19 / 6%), 0 1px 1px rgb(20 20 19 / 4%);
+  --shadow-2: 0 12px 32px rgb(20 20 19 / 10%), 0 2px 6px rgb(20 20 19 / 6%);
   color-scheme: light;
 }
 
@@ -200,6 +218,7 @@
     --dur-medium: 150ms;
     --dur-long: 150ms;
     --reveal-distance: 0px;
+    --dur-reveal: 150ms;
     --page-distance: 0px;
   }
 }

@@ -1,6 +1,7 @@
 import {useLayoutEffect, useRef} from 'react';
-import {NoteRow, Roadmap} from '../components/Notes';
+import {ChapterStream, NoteGrid} from '../components/Notes';
 import {articles, directions} from '../lib/site';
+import {tagLabel, useLang, useT} from '../lib/i18n';
 
 const FILTERS = ['全部', ...directions.map(direction => direction.tag)];
 
@@ -18,14 +19,15 @@ function useFlip(listRef, key) {
     for (const element of list.children) {
       if (!element.animate) continue;
       const from = before.get(element.dataset.id), now = element.getBoundingClientRect();
-      if (!from) element.animate([{opacity: 0}, {opacity: 1}], {duration: 250, easing: 'cubic-bezier(0.05, 0.7, 0.1, 1)'});
-      else if (from.top !== now.top) element.animate([{transform: `translateY(${from.top - now.top}px)`}, {transform: 'none'}], {duration: 400, easing: 'cubic-bezier(0.2, 0, 0, 1)'});
+      if (!from) element.animate([{opacity: 0, transform: 'scale(0.96)'}, {opacity: 1, transform: 'none'}], {duration: 400, easing: 'cubic-bezier(0.05, 0.7, 0.1, 1)'});
+      else if (from.top !== now.top || from.left !== now.left) element.animate([{transform: `translate(${from.left - now.left}px, ${from.top - now.top}px)`}, {transform: 'none'}], {duration: 400, easing: 'cubic-bezier(0.2, 0, 0, 1)'});
     }
   }, [key]);
   return snapshot;
 }
 
 export default function Notes({topic}) {
+  const lang = useLang(), t = useT();
   const filter = FILTERS.includes(topic) ? topic : '全部';
   const listRef = useRef(null);
   const data = articles.filter(item => filter === '全部' || item.tag === filter);
@@ -43,21 +45,19 @@ export default function Notes({topic}) {
   };
   return <div className="container page">
     <header className="page-head">
-      <h1 className="page-title" tabIndex={-1}>知识与笔记</h1>
-      <p className="page-lede">VLA、WAM 与视频生成。基础知识是地图，技术笔记是走过的路。</p>
+      <h1 className="page-title" tabIndex={-1}>{t('notes.title')}</h1>
+      <p className="page-lede">{t('notes.lede')}</p>
     </header>
-    <div className="segmented" role="radiogroup" aria-label="按方向筛选" onKeyDown={keydown}>
+    <div className="segmented" role="radiogroup" aria-label={t('notes.filter')} onKeyDown={keydown}>
       {FILTERS.map(tag => {
         const count = tag === '全部' ? articles.length : articles.filter(item => item.tag === tag).length;
         return <button key={tag} type="button" role="radio" data-tag={tag} aria-checked={filter === tag} tabIndex={filter === tag ? 0 : -1} onClick={() => select(tag)}>
-          {tag}<span className="segmented-count">{count}</span>
+          {tag === '全部' ? t('notes.all') : tagLabel(tag, lang)}<span className="segmented-count">{count}</span>
         </button>;
       })}
     </div>
-    <p className="visually-hidden" aria-live="polite">{filter === '全部' ? `全部 ${data.length} 篇笔记` : `${filter}：${data.length} 篇笔记`}</p>
-    {data.length ? <ul className="note-list note-list-large" role="list" ref={listRef}>
-      {data.map(item => <li key={item.id} data-id={item.id}><NoteRow item={item} headingLevel="h2"/></li>)}
-    </ul> : <div className="empty-note"><p>这个方向的第一篇笔记还在写。</p></div>}
-    <Roadmap tag={filter}/>
+    <p className="visually-hidden" aria-live="polite">{t('notes.live', filter === '全部' ? '' : tagLabel(filter, lang), data.length)}</p>
+    {data.length ? <NoteGrid notes={data} headingLevel="h2" listRef={listRef}/> : <div className="empty-note"><p>{t('notes.empty')}</p></div>}
+    <div className="section"><ChapterStream/></div>
   </div>;
 }

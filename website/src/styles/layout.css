@@ -103,6 +103,21 @@
 }
 .theme-switch button[aria-checked="true"] { background: var(--color-surface-raised); color: var(--color-text-primary); }
 .menu-trigger { display: none; }
+.lang-switch:not(.button) {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding-inline: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  font-weight: var(--weight-medium);
+  transition: color var(--dur-short) var(--ease-standard), border-color var(--dur-short) var(--ease-standard);
+}
+@media (hover: hover) { .lang-switch:not(.button):hover { color: var(--color-text-primary); border-color: var(--color-border-strong); } }
 
 @media (max-width: 767px) {
   .desktop-nav, .header-actions .theme-switch, .search-label, .search-trigger kbd { display: none; }
@@ -140,6 +155,7 @@
   min-height: 56px;
   border-bottom: 1px solid var(--color-border);
   color: var(--color-text-secondary);
+  font-family: var(--font-serif);
   font-size: var(--text-title);
   line-height: var(--leading-title);
   font-weight: var(--weight-medium);
@@ -160,29 +176,40 @@
 @keyframes fade-in { from { opacity: 0; } }
 
 /* Footer */
-.site-footer { margin-top: var(--section-gap); border-top: 1px solid var(--color-border); }
+.site-footer { margin-top: var(--section-gap); border-top: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-bg) 86%, transparent); }
 .footer-inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4) var(--space-6);
-  padding-block: var(--space-6) var(--space-7);
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--grid-gap);
+  padding-block: var(--space-8) var(--space-6);
 }
-.footer-line { color: var(--color-text-primary); font-size: var(--text-title-sm); line-height: var(--leading-title-sm); }
-.footer-links { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.footer-links a {
+.footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-5); color: var(--color-text-primary); }
+.footer-line { max-width: 14em; font-family: var(--font-serif); font-size: var(--text-headline-3); line-height: var(--leading-headline-3); letter-spacing: var(--tracking-display); }
+.footer-heading { margin-bottom: var(--space-3); color: var(--color-text-tertiary); font-family: var(--font-mono); font-size: var(--text-caption); line-height: var(--leading-caption); letter-spacing: var(--tracking-mono); text-transform: uppercase; }
+.footer-col ul { display: flex; flex-direction: column; }
+.footer-col a {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   min-height: var(--tap);
-  padding-inline: var(--space-3);
-  border-radius: var(--radius-sm);
+  min-width: var(--tap);
   color: var(--color-text-secondary);
-  font-size: var(--text-label);
-  line-height: var(--leading-label);
-  transition: color var(--dur-short) var(--ease-standard);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body-sm);
+  transition: color var(--dur-short) var(--ease-standard), transform var(--dur-medium) var(--ease-standard);
 }
-@media (hover: hover) { .footer-links a:hover { color: var(--color-text-primary); } }
-.footer-copy { width: 100%; color: var(--color-text-tertiary); font-family: var(--font-mono); font-size: var(--text-caption); line-height: var(--leading-caption); letter-spacing: var(--tracking-mono); }
-@media (max-width: 767px) { .footer-links { margin-inline: calc(-1 * var(--space-3)); } }
+@media (hover: hover) { .footer-col a:hover { color: var(--color-text-primary); transform: translateX(3px); } }
+.footer-copy {
+  grid-column: 1 / -1;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  letter-spacing: var(--tracking-mono);
+}
+@media (max-width: 767px) {
+  .footer-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-5); padding-top: var(--space-7); }
+  .footer-brand { grid-column: 1 / -1; }
+}
