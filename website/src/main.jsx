@@ -7,6 +7,7 @@ import '@fontsource/barlow-condensed/latin-700.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 import './styles/tokens.css';
 import './styles/base.css';
+import './styles/generated-serif-extra.css';
 import './styles/layout.css';
 import './styles/home.css';
 import './styles/pages.css';

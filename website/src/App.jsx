@@ -8,7 +8,6 @@ import {Toaster} from './components/Toast';
 import Home from './pages/Home';
 import Notes from './pages/Notes';
 import About from './pages/About';
-import Projects from './pages/Projects';
 import {items, loadFullContent, settings} from './lib/site';
 import {bioText, noteSummary, noteTitle, tagLabel, translate, useLang, useT} from './lib/i18n';
 import {PAGES_MODE} from './api';
@@ -17,6 +16,7 @@ const Article = lazy(() => import('./pages/Article'));
 // Opening straight onto an article: fetch its body alongside the article code, not after it.
 if (/^#(article|project|log)\//.test(window.location.hash)) loadFullContent().catch(() => {});
 const Lab = lazy(() => import('./pages/Lab'));
+const Projects = lazy(() => import('./pages/Projects'));
 const Workbench = lazy(() => (PAGES_MODE ? import('./pages/Workbench') : import('./Admin')));
 
 const parse = () => {
