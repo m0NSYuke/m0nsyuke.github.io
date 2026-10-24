@@ -110,13 +110,13 @@ function ProjectToc() {
     <nav id="project-toc" className="project-toc" aria-label={t('projects.index')} ref={railRef}>
       <p className="project-toc-title">{t('projects.index')}</p>
       <ol role="list" className="project-toc-list">
-        {showcase.map((project, index) => {
+        {showcase.map(project => {
           const active = current === project.id;
           const parts = storyParts(project, lang, t);
           const reached = parts.findIndex(([key]) => key === part);
           return <li key={project.id} className="project-toc-item" data-active={active || undefined}>
             <a href={`#projects/${project.id}`} aria-current={active ? 'location' : undefined} onClick={go(`project-${project.id}`, project.id)}>
-              <span className="project-toc-index">{String(index + 1).padStart(2, '0')}</span>
+              <span className="project-toc-bar" aria-hidden="true"/>
               <span className="project-toc-name">{project.name}</span>
             </a>
             <div className="project-toc-parts" inert={!active}>
@@ -130,7 +130,7 @@ function ProjectToc() {
         })}
         {projects.length > 0 && <li className="project-toc-item" data-active={current === 'more' || undefined}>
           <a href="#projects" aria-current={current === 'more' ? 'location' : undefined} onClick={go('projects-more')}>
-            <span className="project-toc-index">+</span>
+            <span className="project-toc-bar" aria-hidden="true"/>
             <span className="project-toc-name">{t('projects.others')}</span>
           </a>
         </li>}
