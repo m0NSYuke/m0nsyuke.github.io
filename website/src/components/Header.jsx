@@ -5,7 +5,7 @@ import {isMac} from '../lib/site';
 import {getPreference, onThemeChange, setPreference} from '../lib/theme';
 import {setLang, useLang, useT} from '../lib/i18n';
 
-export const NAV = ['notes', 'lab', 'about'];
+export const NAV = ['notes', 'projects', 'lab', 'about'];
 const THEMES = [['system', Desktop], ['light', Sun], ['dark', Moon]];
 
 function LangSwitch({full = false}) {
@@ -70,7 +70,7 @@ export default function Header({route, onSearch, searchRef}) {
   const [menu, setMenu] = useState(false), [scrolled, setScrolled] = useState(false), [shortcut, setShortcut] = useState('Ctrl K');
   const menuRef = useRef(null), menuButton = useRef(null);
   const section = route.split('/')[0];
-  const current = path => section === path || (path === 'notes' && section === 'article');
+  const current = path => section === path || (path === 'notes' && section === 'article') || (path === 'projects' && section === 'works');
   useEffect(() => setShortcut(isMac() ? '⌘K' : 'Ctrl K'), []);
   useEffect(() => setMenu(false), [route]);
   useEffect(() => {

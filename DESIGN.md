@@ -91,7 +91,7 @@
 | 角色 | 字体栈 | 说明 |
 | --- | --- | --- |
 | 界面 / 正文 | `Inter, "PingFang SC", "HarmonyOS Sans SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif` | Inter 自托管（latin 子集，400/500/600），中文交给系统字体，雅黑不再排第一 |
-| 衬线（所有标题） | `"m0 Serif", "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif` | Anthropic 的 anthropicSerif 是专有字体，不能用。改用最接近的开源字体：思源宋体 Medium（Noto Serif SC，西文字形就是 Source Serif）。`scripts/build-fonts.mjs` 在每次构建时收集界面文案、笔记标题、摘要和正文小标题里用到的字，子集化成约 100KB 的 `public/fonts/m0-serif.woff2`，新文章会自动带上新字。不用 Google Fonts，因为国内访问不稳定 |
+| 衬线（所有标题） | `"m0 Serif", "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif` | Anthropic 的 anthropicSerif 是专有字体，不能用。改用最接近的开源字体：思源宋体 Medium（Noto Serif SC，西文字形就是 Source Serif）。`scripts/build-fonts.mjs` 在每次构建时收集界面文案、笔记标题、摘要和正文小标题里用到的字，子集化成约 100KB 的 `public/fonts/m0-serif.woff2`，新文章会自动带上新字。只在项目专栏文案（`src/lib/showcase.js`）里出现的字另外打包成 `m0-serif-extra.woff2`，靠 `unicode-range` 只在用到时下载（规则写在构建时生成的 `src/styles/generated-serif-extra.css`）。不用 Google Fonts，因为国内访问不稳定 |
 | 字标 | `"Barlow Condensed"` 700 | 保留 |
 | 终端 / 元信息 | `"IBM Plex Mono"` 400 | 保留 |
 
@@ -199,6 +199,18 @@
 ### 关于页
 
 大号衬线问候语，右侧 logo 外有两圈反向缓慢旋转的轨道。研究兴趣是编辑式整行列表，悬停时底色从左向右铺开、方向名右移变金色。经历用竖向时间轴，联系方式放在一张居中的大卡片里。
+
+### 项目专栏（Vibe Coding）
+
+`#projects` 展示和 AI 一起做出来的项目，内容在 `src/lib/showcase.js`（中英文各一份），不走 `content.json`；`content.json` 里的作品会列在页面末尾「更多项目」。`#works` 仍可打开同一页，`#projects/<id>` 直接滚到对应项目。
+
+- 页首：提示词打字动画（减少动效时直接显示整句），下面是各项目的锚点。
+- 每个项目：超大衬线名称和一句话，浏览器外框里放演示视频或截图（滚动进入时从倾斜缩小状态展开，用 `animation-timeline: view()`，不支持的浏览器直接显示）；正文、在线体验和源码按钮、技术标签；右侧三个数字进入视口时计数。
+- Model Atlas 额外有「代码 → 3D」流水线（芯片依次亮起）和功能卡片；SOCLOOK 有五步每周流程，进度线从左到右（手机上从上到下）走过各步骤。
+- 演示视频静音循环、`preload="none"`，只在可见时播放，有暂停按钮；系统设置减少动效时不自动播放。
+- 首页「Vibe Coding 项目」区块是两张大卡片，链接到对应项目。
+- Model Atlas 在线体验：部署工作流在站点构建后克隆 `m0NSYuke/model-atlas`，以 `--base=/atlas/` 构建到 `dist/client/atlas`，所以地址是 `/atlas/`，每次部署都取它的最新代码。这一步失败不会阻止站点发布，只是在线体验暂时打不开。
+- 素材在 `public/assets/projects/`：Atlas 截图分中英文（`atlas-zh|en-800|1600`）、卡片裁图（`atlas-3d-zh|en`、`soclook-hero`）、演示视频 `atlas-demo.mp4`（1280×720，约 1.3MB）。截图来自各项目自己的构建，重拍时用 Playwright 在 1600×960 视口截图，再用 sharp 转成 avif 和 webp。
 
 ### 中英文
 

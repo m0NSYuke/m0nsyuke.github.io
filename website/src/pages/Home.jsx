@@ -4,6 +4,7 @@ import Morph from '../components/Morph';
 import Picture from '../components/Picture';
 import Reveal from '../components/Reveal';
 import {DirectionCards, KnowledgeMap, NoteGrid, TagPill, Timeline} from '../components/Notes';
+import {ProjectCards} from '../components/Showcase';
 import {articles, directions} from '../lib/site';
 import {useT} from '../lib/i18n';
 
@@ -100,6 +101,16 @@ export default function Home() {
         <a className="text-link" href="#notes">{t('home.allNotes')}<ArrowUpRight size={16} aria-hidden="true"/></a>
       </Reveal>
       <NoteGrid notes={articles.slice(0, 3)}/>
+    </section>
+    <section className="section container" aria-labelledby="projects-title">
+      <Reveal className="section-head section-head-row">
+        <div className="section-head-copy">
+          <h2 id="projects-title" className="section-title">{t('home.projects')}</h2>
+          <p className="section-lede">{t('home.projectsLede')}</p>
+        </div>
+        <a className="text-link" href="#projects">{t('home.allProjects')}<ArrowUpRight size={16} aria-hidden="true"/></a>
+      </Reveal>
+      <ProjectCards/>
     </section>
     <div className="section container"><KnowledgeMap/></div>
     <section className="section container home-about" aria-labelledby="about-title">

@@ -9,4 +9,5 @@ public/data/content.json
 public/rss.xml
 public/.nojekyll
 src/generated-content.json
+src/styles/generated-serif-extra.css
 public/fonts/
