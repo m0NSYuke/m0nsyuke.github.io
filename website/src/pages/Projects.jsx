@@ -1,4 +1,6 @@
-import {useEffect} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
+import {ArrowUp, CaretUp} from '@phosphor-icons/react';
 import Reveal from '../components/Reveal';
 import {NoteGrid} from '../components/Notes';
 import {CountUp, DemoVideo, ProjectLinks, ProjectShot, PromptTicker} from '../components/Showcase';
@@ -32,6 +34,114 @@ function Workflow({steps, label}) {
   </Reveal>;
 }
 
+// The parts of one project story the contents rail can jump to.
+function storyParts(project, lang, t) {
+  const text = projectText(project, lang);
+  const how = text.pipeline ? text.extraTitle || t('projects.howAtlas') : text.steps ? t('projects.howSoclook') : null;
+  return [['demo', t('projects.tocDemo')], ['intro', t('projects.tocIntro')], ...(how ? [['how', how]] : [])];
+}
+
+const partId = (project, key) => `project-${project}-${key}`;
+
+// Which project and part sit under the reading line (35% down the viewport), and how far through it we are.
+function useReadingPosition(entries, railRef) {
+  const [position, setPosition] = useState({project: null, part: null, past: false});
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = innerHeight * 0.35;
+      let project = null, part = null, progress = 0;
+      for (const {id, parts} of entries) {
+        const box = document.getElementById(`project-${id}`)?.getBoundingClientRect();
+        if (!box || box.top > line) continue;
+        project = box.bottom > line ? id : null;
+        progress = Math.min(1, Math.max(0, (line - box.top) / box.height));
+        part = parts.filter(key => document.getElementById(partId(id, key))?.getBoundingClientRect().top <= line).pop() || parts[0];
+      }
+      const more = document.getElementById('projects-more')?.getBoundingClientRect();
+      if (more && more.top <= line) project = 'more';
+      const first = document.getElementById(`project-${entries[0]?.id}`)?.getBoundingClientRect();
+      const past = !!first && first.top <= innerHeight * 0.6;
+      // Progress changes every frame; write it straight to the rail instead of re-rendering.
+      railRef.current?.style.setProperty('--progress', project === 'more' ? 1 : progress);
+      setPosition(prev => prev.project === project && prev.part === part && prev.past === past ? prev : {project, part, past});
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    addEventListener('scroll', schedule, {passive: true});
+    addEventListener('resize', schedule);
+    return () => { cancelAnimationFrame(frame); removeEventListener('scroll', schedule); removeEventListener('resize', schedule); };
+  }, [entries, railRef]);
+  return position;
+}
+
+function ProjectToc() {
+  const lang = useLang(), t = useT();
+  const railRef = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [entries] = useState(() => showcase.map(project => ({id: project.id, parts: storyParts(project, 'zh', t).map(([key]) => key)})));
+  const {project: current, part, past} = useReadingPosition(entries, railRef);
+  useEffect(() => {
+    if (!open) return;
+    const close = event => {
+      if (event.type === 'keydown' ? event.key === 'Escape' : !railRef.current?.parentElement.contains(event.target)) setOpen(false);
+    };
+    addEventListener('keydown', close);
+    addEventListener('pointerdown', close);
+    return () => { removeEventListener('keydown', close); removeEventListener('pointerdown', close); };
+  }, [open]);
+  // Scroll in place; the hash records the project without re-routing the page.
+  const go = (targetId, project) => event => {
+    event.preventDefault();
+    setOpen(false);
+    document.getElementById(targetId)?.scrollIntoView({behavior: reducedMotionScroll(), block: 'start'});
+    if (project) history.replaceState(null, '', `#projects/${project}`);
+  };
+  const currentIndex = showcase.findIndex(project => project.id === current);
+  const currentName = current === 'more' ? t('projects.others') : showcase[currentIndex]?.name || t('projects.index');
+  // Portalled: the page transition's transform would otherwise pin the rail to the page, not the viewport.
+  return createPortal(<div className="project-toc-wrap" data-past={past || undefined} data-open={open || undefined}>
+    <button type="button" className="project-toc-toggle" aria-expanded={open} aria-controls="project-toc" onClick={() => setOpen(value => !value)}>
+      <span className="project-toc-index">{currentIndex >= 0 ? String(currentIndex + 1).padStart(2, '0') : '··'}</span>
+      <span className="project-toc-toggle-name">{currentName}</span>
+      <CaretUp size={14} aria-hidden="true"/>
+    </button>
+    <nav id="project-toc" className="project-toc" aria-label={t('projects.index')} ref={railRef}>
+      <p className="project-toc-title">{t('projects.index')}</p>
+      <ol role="list" className="project-toc-list">
+        {showcase.map((project, index) => {
+          const active = current === project.id;
+          const parts = storyParts(project, lang, t);
+          const reached = parts.findIndex(([key]) => key === part);
+          return <li key={project.id} className="project-toc-item" data-active={active || undefined}>
+            <a href={`#projects/${project.id}`} aria-current={active ? 'location' : undefined} onClick={go(`project-${project.id}`, project.id)}>
+              <span className="project-toc-index">{String(index + 1).padStart(2, '0')}</span>
+              <span className="project-toc-name">{project.name}</span>
+            </a>
+            <div className="project-toc-parts" inert={!active}>
+              <ol role="list">
+                {parts.map(([key, label], partIndex) => <li key={key} data-reached={(active && partIndex <= reached) || undefined}>
+                  <a href={`#projects/${project.id}`} aria-current={active && key === part ? 'location' : undefined} onClick={go(partId(project.id, key), project.id)}>{label}</a>
+                </li>)}
+              </ol>
+            </div>
+          </li>;
+        })}
+        {projects.length > 0 && <li className="project-toc-item" data-active={current === 'more' || undefined}>
+          <a href="#projects" aria-current={current === 'more' ? 'location' : undefined} onClick={go('projects-more')}>
+            <span className="project-toc-index">+</span>
+            <span className="project-toc-name">{t('projects.others')}</span>
+          </a>
+        </li>}
+      </ol>
+      <a className="project-toc-top" href="#projects" onClick={event => { event.preventDefault(); setOpen(false); scrollTo({top: 0, behavior: reducedMotionScroll()}); }}>
+        <ArrowUp size={14} aria-hidden="true"/>{t('projects.top')}
+      </a>
+    </nav>
+  </div>, document.body);
+}
+
 function ProjectStory({project, index}) {
   const lang = useLang(), t = useT();
   const text = projectText(project, lang);
@@ -44,14 +154,14 @@ function ProjectStory({project, index}) {
         <h2 id={headingId} className="project-name">{project.name}</h2>
         <p className="project-tagline">{text.tagline}</p>
       </Reveal>
-      <div className="project-stage">
+      <div id={`project-${project.id}-demo`} className="project-stage">
         <BrowserFrame url={url}>
           {project.video
             ? <DemoVideo src={`/assets/projects/${project.video}`} poster={`/assets/projects/${project.image(lang)}-1600.webp`} label={t('projects.videoLabel', project.name)}/>
             : <ProjectShot name={project.image(lang)} alt={t('projects.shotLabel', project.name)} sizes="(min-width: 1248px) 1152px, 94vw" width={1600} height={960}/>}
         </BrowserFrame>
       </div>
-      <div className="project-grid">
+      <div id={`project-${project.id}-intro`} className="project-grid">
         <Reveal className="project-copy">
           <p className="project-summary">{text.summary}</p>
           <p className="project-body">{text.body}</p>
@@ -65,7 +175,7 @@ function ProjectStory({project, index}) {
           </li>)}
         </Reveal>
       </div>
-      {text.pipeline && <div className="project-extra">
+      {text.pipeline && <div id={`project-${project.id}-how`} className="project-extra">
         <Reveal className="project-extra-head"><h3 className="project-extra-title">{text.extraTitle || t('projects.howAtlas')}</h3></Reveal>
         <Pipeline steps={text.pipeline} label={text.extraTitle || t('projects.howAtlas')}/>
         <Reveal as="ul" stagger className="feature-list" role="list">
@@ -76,7 +186,7 @@ function ProjectStory({project, index}) {
           </li>)}
         </Reveal>
       </div>}
-      {text.steps && <div className="project-extra">
+      {text.steps && <div id={`project-${project.id}-how`} className="project-extra">
         <Reveal className="project-extra-head"><h3 className="project-extra-title">{t('projects.howSoclook')}</h3></Reveal>
         <Workflow steps={text.steps} label={t('projects.howSoclook')}/>
       </div>}
@@ -107,8 +217,9 @@ export default function Projects({focus}) {
         </a>)}
       </nav>
     </header>
+    <ProjectToc/>
     {showcase.map((project, index) => <ProjectStory key={project.id} project={project} index={index}/>)}
-    {projects.length > 0 && <section className="container section" aria-labelledby="more-projects">
+    {projects.length > 0 && <section id="projects-more" className="container section projects-more" aria-labelledby="more-projects">
       <Reveal className="section-head"><h2 id="more-projects" className="section-title">{t('projects.others')}</h2></Reveal>
       <NoteGrid notes={projects}/>
     </section>}
