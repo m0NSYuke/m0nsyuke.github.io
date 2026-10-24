@@ -27,6 +27,16 @@ jobs:
           SITE_URL: https://${{ github.repository_owner }}.github.io
           VITE_SITE_REPOSITORY: ${{ github.repository }}
       - run: npm run test:pages
+      # The live Model Atlas demo linked from #projects, rebuilt from its own repo under /atlas/.
+      # If it fails, the site still ships; only the demo link is affected.
+      - name: Build Model Atlas demo
+        continue-on-error: true
+        run: |
+          git clone --depth 1 https://github.com/m0NSYuke/model-atlas.git "$RUNNER_TEMP/model-atlas"
+          cd "$RUNNER_TEMP/model-atlas"
+          npm ci --no-audit --no-fund
+          npx tsc -b
+          npx vite build --base=/atlas/ --outDir "$GITHUB_WORKSPACE/website/dist/client/atlas" --emptyOutDir
       - uses: actions/upload-pages-artifact@v3
         with:
           path: website/dist/client

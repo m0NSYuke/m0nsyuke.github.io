@@ -8,8 +8,8 @@ import {Toaster} from './components/Toast';
 import Home from './pages/Home';
 import Notes from './pages/Notes';
 import About from './pages/About';
-import {NoteGrid} from './components/Notes';
-import {articleHref, items, loadFullContent, projects, settings} from './lib/site';
+import Projects from './pages/Projects';
+import {items, loadFullContent, settings} from './lib/site';
 import {bioText, noteSummary, noteTitle, tagLabel, translate, useLang, useT} from './lib/i18n';
 import {PAGES_MODE} from './api';
 
@@ -41,7 +41,8 @@ function describe({page, id}, lang) {
     notes: {title: id ? `${tagLabel(id, lang)} · ${t('meta.notes')}` : t('meta.notes'), description: t('meta.notesDescription')},
     lab: {title: t('meta.lab'), description: t('meta.labDescription')},
     about: {title: t('meta.about'), description: bioText(settings, lang)},
-    works: {title: t('meta.works'), description},
+    projects: {title: t('meta.projects'), description: t('meta.projectsDescription')},
+    works: {title: t('meta.projects'), description: t('meta.projectsDescription')},
     admin: {title: t('meta.admin'), description},
   })[page] || {title: t('meta.missing'), description};
 }
@@ -55,26 +56,13 @@ function NotFound({article = false}) {
   </div>;
 }
 
-function Works() {
-  const t = useT();
-  if (!projects.length) return <div className="container page empty-page">
-    <h1 className="page-title" tabIndex={-1}>{t('works.title')}</h1>
-    <p className="page-lede">{t('works.empty')}</p>
-    <div className="button-row"><a className="button button-primary" href="#lab">{t('works.lab')}<ArrowRight size={18} aria-hidden="true"/></a><a className="button button-secondary" href="#notes">{t('hero.read')}</a></div>
-  </div>;
-  return <div className="container page">
-    <header className="page-head"><h1 className="page-title" tabIndex={-1}>{t('works.title')}</h1></header>
-    <NoteGrid notes={projects} headingLevel="h2"/>
-  </div>;
-}
-
 function Page({location}) {
   const {page, id, section} = location;
   if (page === 'home') return <Home/>;
   if (page === 'notes') return <Notes topic={id || '全部'}/>;
   if (page === 'about') return <About/>;
   if (page === 'lab') return <Lab/>;
-  if (page === 'works') return <Works/>;
+  if (page === 'projects' || page === 'works') return <Projects focus={page === 'projects' ? id : undefined}/>;
   if (page === 'admin') return <Workbench onUpdated={() => {}}/>;
   if (['article', 'project', 'log'].includes(page)) {
     const item = items.find(entry => entry.id === id && entry.kind === page);
@@ -89,7 +77,7 @@ export function App() {
   const [search, setSearch] = useState(false);
   const [announcement, setAnnouncement] = useState('');
   const searchRef = useRef(null), mainRef = useRef(null), previousPage = useRef(null);
-  const pageKey = location.page === 'notes' ? 'notes' : `${location.page}/${location.id || ''}`;
+  const pageKey = ['notes', 'projects'].includes(location.page) ? location.page : `${location.page}/${location.id || ''}`;
 
   useEffect(() => {
     const change = () => setLocation(parse());
