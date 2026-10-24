@@ -90,6 +90,53 @@ export const showcase = [
       ],
     },
   },
+  {
+    id: 'paperlab',
+    name: 'PaperLab',
+    repo: 'https://github.com/m0NSYuke/PaperLab',
+    live: 'https://github.com/m0NSYuke/PaperLab#readme',
+    // A local app: the frame shows where it runs, not where its README lives.
+    frameUrl: '127.0.0.1:8000',
+    image: () => 'paperlab',
+    card: () => 'paperlab-card',
+    tags: ['React', 'TypeScript', 'FastAPI', 'PDF.js', 'llama.cpp', 'Claude Code'],
+    zh: {
+      kind: '论文精读工作台',
+      tagline: '读懂论文，而不只是读完。',
+      summary: '左边是原文，右边是每句都能追到原文的中文讲解；选中英文就地翻译，读完用自测题检验自己是不是真懂了。',
+      body: '报告由 Claude Code 或 Codex 写，但每条引句都要先在原文对应页找到，校验不过就不能发布。翻译用本机显卡上的模型，不联网、不占额度；论文、笔记和学习记录都是电脑上的普通文件。',
+      liveLabel: '安装与上手',
+      liveNote: 'Windows 本机运行 · 论文由你自己导入',
+      extraTitle: '一篇论文怎样被读懂',
+      stats: [[0, '', '条没在原文里找到的引句能进入报告'], [217, '', '条 AI / 机器人术语统一译法'], ['1–2', ' 秒', '本机显卡翻译一句，不占任何额度']],
+      features: [
+        ['有出处的讲解', '每条结论附原文页码和引句，点一下跳页高亮；论文事实、推断和待核实分开标出。'],
+        ['离线划词翻译', '单词和术语查本地词典与术语库，即点即出；整句交给本机的 Hy-MT2 模型，用时启动、空闲退出。'],
+        ['Zotero 式阅读器', '只有一条工具栏，目录栏和讲解栏都能收起；专注模式只留论文。'],
+        ['把理解变成能力', '三遍读法路线、先答后看的自测题、新意度 × 有效性 × 问题大小的打分，还有跨论文的想法本。'],
+        ['为 Agent 设计', 'Claude Code /paper、Codex $paper 生成报告，校验通过才写入；人工笔记和纠错永远不会被覆盖。'],
+      ],
+      pipeline: ['导入 PDF / arXiv', '固定版本', 'Agent 写报告', '逐条校验引句', '对照阅读', '自测与判断'],
+    },
+    en: {
+      kind: 'Paper reading workspace',
+      tagline: 'Understand papers, not just finish them.',
+      summary: 'The PDF on one side, a Chinese explanation on the other where every sentence traces back to the source; select English to translate it in place, then check yourself with self-tests.',
+      body: 'Claude Code or Codex writes the report, but every quote must be found on its page of the PDF before it can be published. Translation runs on a model on your own GPU, offline and free; papers, notes and study records are plain files on your machine.',
+      liveLabel: 'Get started',
+      liveNote: 'Runs locally on Windows · bring your own papers',
+      extraTitle: 'How a paper gets understood',
+      stats: [[0, '', 'quotes reach a report without being found in the PDF'], [217, '', 'AI and robotics terms with consistent translations'], ['1–2', ' s', 'to translate a sentence on a local GPU, no quota used']],
+      features: [
+        ['Explanations with sources', 'Every claim carries a page and a quote; one click jumps to it and highlights it. Facts, inferences and open questions are labelled apart.'],
+        ['Offline selection translation', 'Words and terms come from a local dictionary and glossary instantly; sentences go to a Hy-MT2 model on your GPU that starts on demand and stops when idle.'],
+        ['A Zotero-style reader', 'One toolbar; the outline and the explanation pane both fold away, and focus mode leaves only the paper.'],
+        ['Reading into understanding', 'A three-pass route, self-tests you answer before peeking, a novelty × effectiveness × problem-size score and a cross-paper idea notebook.'],
+        ['Built for agents', 'Claude Code /paper and Codex $paper write reports that are validated before they land; your notes and corrections are never overwritten.'],
+      ],
+      pipeline: ['Import PDF / arXiv', 'Pin the version', 'Agent writes report', 'Verify every quote', 'Read side by side', 'Self-test and judge'],
+    },
+  },
 ];
 
 export const projectText = (project, lang) => project[lang] || project.zh;

@@ -36,7 +36,7 @@ function ProjectStory({project, index}) {
   const lang = useLang(), t = useT();
   const text = projectText(project, lang);
   const headingId = `${project.id}-title`;
-  const url = project.live.startsWith('http') ? project.live.replace(/^https:\/\//, '').replace(/\/$/, '') : `m0nsyuke.github.io${project.live.replace(/\/$/, '')}`;
+  const url = project.frameUrl || (project.live.startsWith('http') ? project.live.replace(/^https:\/\//, '').replace(/\/$/, '') : `m0nsyuke.github.io${project.live.replace(/\/$/, '')}`);
   return <section id={`project-${project.id}`} className="project-story" aria-labelledby={headingId}>
     <div className="container">
       <Reveal className="project-head">
@@ -66,8 +66,8 @@ function ProjectStory({project, index}) {
         </Reveal>
       </div>
       {text.pipeline && <div className="project-extra">
-        <Reveal className="project-extra-head"><h3 className="project-extra-title">{t('projects.howAtlas')}</h3></Reveal>
-        <Pipeline steps={text.pipeline} label={t('projects.howAtlas')}/>
+        <Reveal className="project-extra-head"><h3 className="project-extra-title">{text.extraTitle || t('projects.howAtlas')}</h3></Reveal>
+        <Pipeline steps={text.pipeline} label={text.extraTitle || t('projects.howAtlas')}/>
         <Reveal as="ul" stagger className="feature-list" role="list">
           {text.features.map(([title, body], featureIndex) => <li key={title}>
             <span className="feature-index">{String(featureIndex + 1).padStart(2, '0')}</span>
