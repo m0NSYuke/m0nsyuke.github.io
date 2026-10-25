@@ -44,31 +44,3 @@ test('Pages rejects content IDs that could reference files outside the article d
     assert.throws(()=>buildPages({contentRoot:f.content,outputRoot:f.output}),/Invalid content ID/);
   } finally {rmSync(f.root,{recursive:true,force:true});}
 });
-test('Pages publishes idea notes from their header, newest first, and skips the template',()=>{
-  const f=fixture();
-  try {
-    mkdirSync(join(f.content,'ideas'));
-    writeFileSync(join(f.content,'ideas','_template.md'),'---\ntitle: TEMPLATE\ndate: 2026-10-25\n---\nTEMPLATE_BODY');
-    writeFileSync(join(f.content,'ideas','2026-10-20-old.md'),'---\r\ntitle: 旧想法\r\ndate: 2026-10-20\r\nstatus: 搁置\r\n---\r\n试过，行不通。');
-    writeFileSync(join(f.content,'ideas','2026-10-25-chunk.md'),'---\ntitle: 自适应动作块\ndate: 2026-10-25\ntags: VLA，动作块\n---\n**想法**：$H$ 随置信度变化。');
-    const data=buildPages({contentRoot:f.content,outputRoot:f.output});
-    assert.deepEqual(data.ideas.map(idea=>idea.id),['2026-10-25-chunk','2026-10-20-old']);
-    assert.deepEqual(data.ideas[0],{id:'2026-10-25-chunk',title:'自适应动作块',date:'2026-10-25',status:'seed',tags:['VLA','动作块'],sample:false,body:'**想法**：$H$ 随置信度变化。'});
-    assert.equal(data.ideas[1].status,'parked');
-    assert.ok(!readFileSync(join(f.output,'data','content.json'),'utf8').includes('TEMPLATE_BODY'));
-  } finally {rmSync(f.root,{recursive:true,force:true});}
-});
-test('Pages rejects ideas with an unknown status, bad date or unsafe file name',()=>{
-  const f=fixture();
-  try {
-    mkdirSync(join(f.content,'ideas'));
-    const idea=join(f.content,'ideas','2026-10-25-x.md');
-    writeFileSync(idea,'---\ntitle: X\ndate: 2026-10-25\nstatus: 完成\n---\nbody');
-    assert.throws(()=>buildPages({contentRoot:f.content,outputRoot:f.output}),/status must be one of/);
-    writeFileSync(idea,'---\ntitle: X\ndate: 10/25\n---\nbody');
-    assert.throws(()=>buildPages({contentRoot:f.content,outputRoot:f.output}),/YYYY-MM-DD/);
-    rmSync(idea);
-    writeFileSync(join(f.content,'ideas','My Idea.md'),'---\ntitle: X\ndate: 2026-10-25\n---\nbody');
-    assert.throws(()=>buildPages({contentRoot:f.content,outputRoot:f.output}),/Invalid idea file name/);
-  } finally {rmSync(f.root,{recursive:true,force:true});}
-});

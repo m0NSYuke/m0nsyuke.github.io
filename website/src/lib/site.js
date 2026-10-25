@@ -11,9 +11,6 @@ export const settings = index.settings;
 export const items = index.items;
 export const articles = items.filter(item => item.kind === 'article');
 export const projects = items.filter(item => item.kind === 'project');
-// Idea notes are short, so they ship whole in the bundle (newest first).
-export const ideas = index.ideas || [];
-export const IDEA_STATUSES = ['seed', 'active', 'validated', 'parked'];
 
 export const directions = [
   {tag: 'VLA', name: '感知，理解，行动', description: '视觉、语言与动作，从基础概念走向模型阅读。'},

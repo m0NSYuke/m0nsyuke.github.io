@@ -74,10 +74,8 @@ export async function renderArticle(item) {
       return `<div class="code-block"><div class="code-bar"><span>${escape(language || 'text')}</span><button type="button" class="copy-code">${escape(t('article.copy'))}</button></div><pre><code class="hljs${language ? ` language-${escape(language)}` : ''}">${body}</code></pre></div>`;
     },
     image({href, title, text}) {
-      // The idea editor stores an image's display ratio ("1.00") as its alt text and the caption as its title.
-      const alt = /^\d+(\.\d+)?$/.test(text) ? title || '' : text;
-      const caption = title || alt;
-      return `<figure><img src="${escape(href)}" alt="${escape(alt)}" loading="lazy" decoding="async">${caption ? `<figcaption>${escape(caption)}</figcaption>` : ''}</figure>`;
+      const caption = title || text;
+      return `<figure><img src="${escape(href)}" alt="${escape(text)}" loading="lazy" decoding="async">${caption ? `<figcaption>${escape(caption)}</figcaption>` : ''}</figure>`;
     },
     table(token) {
       return `<div class="table-scroll" tabindex="0" role="region" aria-label="${escape(t('article.table'))}">${defaultTable.call(this, token)}</div>`;

@@ -4,40 +4,6 @@
 
 React、Motion 和 Three.js 实现黑金界面、搜索、筛选、滚动时间轴与可交互形态实验。GitHub Pages 托管网站；公开内容在构建时生成，无需云服务器、Node 后台或云数据库。GitHub Actions 在每次提交到 `main` 后自动更新网站。
 
-## 写随记
-
-「随记」栏（`#ideas`）放还没成形的想法，一个想法一个 Markdown 文件，放在 `website/content/ideas/`。
-
-### 在网站上写（推荐）
-
-打开 `https://m0nsyuke.github.io/#ideas/new`（或 `#admin` → 打开随记编辑器）。
-
-- **所见即所得**：截图直接粘贴（或拖进来），图片在正文里原样显示；输入 `/` 插入标题、列表、待办、公式、代码块和表格。
-- **不丢内容**：每次停笔约半秒自动存为本机草稿（IndexedDB，图片也在内）；刷新、断网、关掉页面都能接着写。`Ctrl S` 立即保存。草稿只在这台设备上。
-- **点「发布」才公开**：正文和图片在一次提交里写进仓库（图片压缩为不超过 1600 px 的 WebP，放在 `website/public/ideas-media/<随记>/`），约 2 分钟后上线。
-- 连接后随记页会出现「写随记」按钮，每条随记标题旁有编辑按钮；编辑时删掉的图片会在同一次提交里从仓库删除。
-- **第一次使用要连接 GitHub**（每台设备一次）：在 GitHub 新建一个 fine-grained token，Repository access 只选本仓库，Permissions 里 Contents 设为 Read and write，粘贴到编辑器。令牌只存在这个浏览器里、只发给 GitHub，可以随时在 GitHub 的 Settings → Developer settings 撤销。
-
-### 在 GitHub 上写
-
-打开网站 `#admin`，点「新建随记文件」，GitHub 会带着今天的日期和模板打开新文件；也可以复制 `_template.md`。
-
-```markdown
----
-title: 动作块长度能不能随置信度变化
-date: 2026-10-25
-tags: VLA, 动作块
-status: 萌芽
----
-正文写 Markdown，支持 $公式$、列表和代码块。
-```
-
-- 文件名就是链接（`#ideas/<文件名>`）：小写字母、数字和短横线，例如 `2026-10-25-adaptive-chunk.md`。
-- `status` 四选一：`萌芽`、`推进中`、`已验证`、`搁置`；想法有进展时改这一行即可。不写默认萌芽。
-- `tags` 用逗号分隔，最多 6 个，页面上可以按标签筛选。
-- 以 `_` 开头的文件不会发布；格式写错时构建会失败并指出是哪个文件，网站保持上一个版本。
-- 提交即公开（仓库和历史都是公开的），不想公开的想法不要放进来。
-
 ## 更新现有文章
 
 1. 打开 `website/content/published`，找到文章的 `.md` 文件。
