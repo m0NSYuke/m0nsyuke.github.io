@@ -25,7 +25,36 @@ export function compileContent(contentRoot) {
     if(body.length>100000)throw new Error(`Article too long: ${file}`);
     return {...Object.fromEntries(['id','kind','section','title','summary','tag','date','image','status'].map(key=>[key,input[key]])),sample:input.sample===true,body};
   }).sort((a,b)=>b.date.localeCompare(a.date)||a.id.localeCompare(b.id));
-  return {settings,items};
+  return {settings,items,ideas:compileIdeas(contentRoot)};
+}
+
+// Idea notes: one Markdown file each in content/ideas, with a few `key: value` lines
+// between --- fences on top. Files starting with _ (the template) are not published.
+export const IDEA_STATUS={'萌芽':'seed','推进中':'active','已验证':'validated','搁置':'parked'};
+export function compileIdeas(contentRoot) {
+  const folder=resolve(contentRoot,'ideas');
+  if(!existsSync(folder))return [];
+  return readdirSync(folder).filter(file=>file.endsWith('.md')&&!file.startsWith('_')).map(file=>{
+    const id=file.slice(0,-3);
+    if(!/^[a-z0-9][a-z0-9-]{0,79}$/.test(id))throw new Error(`Invalid idea file name (lowercase letters, digits and dashes): ${file}`);
+    const source=readFileSync(resolve(folder,file),'utf8').replace(/^﻿/,'').replace(/\r\n/g,'\n');
+    const match=source.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    if(!match)throw new Error(`Idea needs a --- header with title and date: ${file}`);
+    const meta=Object.fromEntries(match[1].split('\n').filter(line=>line.trim()).map(line=>{
+      const at=line.indexOf(':');
+      if(at<1)throw new Error(`Invalid header line in ${file}: ${line}`);
+      return [line.slice(0,at).trim(),line.slice(at+1).trim()];
+    }));
+    const body=match[2].trim();
+    const status=IDEA_STATUS[meta.status||'萌芽'];
+    const tags=(meta.tags||'').split(/[,，]/).map(tag=>tag.trim()).filter(Boolean);
+    if(!meta.title||meta.title.length>120)throw new Error(`Idea title is missing or too long: ${file}`);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(meta.date||'')||Number.isNaN(Date.parse(meta.date)))throw new Error(`Idea date must be YYYY-MM-DD: ${file}`);
+    if(!status)throw new Error(`Idea status must be one of ${Object.keys(IDEA_STATUS).join(' / ')}: ${file}`);
+    if(tags.length>6||tags.some(tag=>tag.length>24))throw new Error(`Use at most 6 short tags: ${file}`);
+    if(!body||body.length>20000)throw new Error(`Idea body is empty or too long: ${file}`);
+    return {id,title:meta.title,date:meta.date,status,tags,sample:meta.sample==='true',body};
+  }).sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
 }
 
 export function buildPages({contentRoot=resolve(root,'content'),outputRoot=resolve(root,'public'),siteUrl=process.env.SITE_URL||'https://m0nsyuke.github.io'}={}) {
@@ -43,7 +72,7 @@ export function buildPages({contentRoot=resolve(root,'content'),outputRoot=resol
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   const data=buildPages();
   // Metadata without bodies ships inside the app bundle so the first paint needs no fetch.
-  const index={settings:data.settings,items:data.items.map(({body,...item})=>({...item,chars:body.replace(/\s+/g,'').length,sections:[...body.matchAll(/^##\s+(.+)$/gm)].map(match=>match[1].trim())}))};
+  const index={settings:data.settings,items:data.items.map(({body,...item})=>({...item,chars:body.replace(/\s+/g,'').length,sections:[...body.matchAll(/^##\s+(.+)$/gm)].map(match=>match[1].trim())})),ideas:data.ideas};
   writeFileSync(resolve(root,'src/generated-content.json'),JSON.stringify(index));
-  console.log(`Prepared ${data.items.length} published entries and RSS for GitHub Pages.`);
+  console.log(`Prepared ${data.items.length} published entries, ${data.ideas.length} ideas and RSS for GitHub Pages.`);
 }

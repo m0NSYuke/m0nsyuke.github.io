@@ -5,7 +5,7 @@ import {useT} from '../lib/i18n';
 
 export default function Footer() {
   const t = useT();
-  const explore = [['#notes', t('nav.notes')], ['#projects', t('nav.projects')], ['#lab', t('nav.lab')], ['#about', t('nav.about')]];
+  const explore = [['#notes', t('nav.notes')], ['#ideas', t('nav.ideas')], ['#projects', t('nav.projects')], ['#lab', t('nav.lab')], ['#about', t('nav.about')]];
   const follow = [
     settings.github && [settings.github, 'GitHub', GithubLogo],
     settings.xiaohongshu && [settings.xiaohongshu, t('about.xhs'), BookOpen],

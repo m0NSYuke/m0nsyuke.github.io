@@ -1,6 +1,6 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import {ArrowRight, MagnifyingGlass, X} from '@phosphor-icons/react';
-import {articleHref, directions, items, loadFullContent} from '../lib/site';
+import {articleHref, directions, ideas, items, loadFullContent} from '../lib/site';
 import {directionName, noteSummary, noteTitle, tagLabel, useLang, useT} from '../lib/i18n';
 
 const CLOSE_MS = 150;
@@ -56,19 +56,25 @@ export default function Search({open, onClose, triggerRef}) {
   }, [open]);
 
   const normalized = query.trim();
-  const results = normalized ? items.map(item => {
+  const needle = normalized.toLowerCase();
+  // Articles and idea notes in one list: {key, href, meta, title, summary}.
+  const results = normalized ? [...items.map(item => {
     const haystack = `${item.title} ${item.summary} ${item.tag} ${noteTitle(item, lang)} ${noteSummary(item, lang)} ${tagLabel(item.tag, lang)}`.toLowerCase();
     const body = bodies[item.id] || '';
-    const inMeta = haystack.includes(normalized.toLowerCase());
-    const inBody = !inMeta && body.toLowerCase().includes(normalized.toLowerCase());
-    return inMeta || inBody ? {item, snippet: inBody ? excerpt(body, normalized) : ''} : null;
-  }).filter(Boolean).slice(0, 8) : [];
-  const visit = item => { window.location.hash = articleHref(item).slice(1); onClose(); };
+    const inMeta = haystack.includes(needle);
+    const inBody = !inMeta && body.toLowerCase().includes(needle);
+    return inMeta || inBody ? {key: item.id, href: articleHref(item), meta: `${tagLabel(item.tag, lang)} · ${t(`section.${item.section}`)}`, title: noteTitle(item, lang), summary: inBody ? excerpt(body, normalized) : noteSummary(item, lang)} : null;
+  }), ...ideas.map(idea => {
+    const inMeta = `${idea.title} ${idea.tags.join(' ')}`.toLowerCase().includes(needle);
+    if (!inMeta && !idea.body.toLowerCase().includes(needle)) return null;
+    return {key: `idea-${idea.id}`, href: `#ideas/${idea.id}`, meta: `${t('nav.ideas')} · ${t(`ideas.status.${idea.status}`)}`, title: idea.title, summary: excerpt(idea.body, normalized) || idea.body.replace(/[#*`>_\-]+/g, ' ').replace(/\s+/g, ' ').slice(0, 80)};
+  })].filter(Boolean).slice(0, 8) : [];
+  const visit = result => { window.location.hash = result.href.slice(1); onClose(); };
   const keydown = event => {
     if (!results.length) return;
     if (event.key === 'ArrowDown') { event.preventDefault(); setActive(value => (value + 1) % results.length); }
     else if (event.key === 'ArrowUp') { event.preventDefault(); setActive(value => (value - 1 + results.length) % results.length); }
-    else if (event.key === 'Enter') { event.preventDefault(); visit(results[Math.min(active, results.length - 1)].item); }
+    else if (event.key === 'Enter') { event.preventDefault(); visit(results[Math.min(active, results.length - 1)]); }
   };
   useEffect(() => { setActive(0); }, [normalized]);
   useEffect(() => { document.getElementById(`${listId}-${active}`)?.scrollIntoView({block: 'nearest'}); }, [active]);
@@ -85,10 +91,10 @@ export default function Search({open, onClose, triggerRef}) {
         {normalized && results.length > 0 && <>
           <p className="search-label" aria-live="polite">{t('search.count', results.length)}</p>
           <ul id={listId} role="listbox" aria-label={t('search.results')} className="search-results">
-            {results.map(({item, snippet}, index) => <li key={item.id} id={`${listId}-${index}`} role="option" aria-selected={index === active} className="search-result" onClick={() => visit(item)} onMouseMove={() => setActive(index)}>
-              <span className="search-result-meta">{tagLabel(item.tag, lang)} · {t(`section.${item.section}`)}</span>
-              <span className="search-result-title">{highlight(noteTitle(item, lang), normalized)}</span>
-              <span className="search-result-summary">{highlight(snippet || noteSummary(item, lang), normalized)}</span>
+            {results.map((result, index) => <li key={result.key} id={`${listId}-${index}`} role="option" aria-selected={index === active} className="search-result" onClick={() => visit(result)} onMouseMove={() => setActive(index)}>
+              <span className="search-result-meta">{result.meta}</span>
+              <span className="search-result-title">{highlight(result.title, normalized)}</span>
+              <span className="search-result-summary">{highlight(result.summary, normalized)}</span>
             </li>)}
           </ul>
         </>}

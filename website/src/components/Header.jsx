@@ -5,7 +5,7 @@ import {isMac} from '../lib/site';
 import {getPreference, onThemeChange, setPreference} from '../lib/theme';
 import {setLang, useLang, useT} from '../lib/i18n';
 
-export const NAV = ['notes', 'projects', 'lab', 'about'];
+export const NAV = ['notes', 'ideas', 'projects', 'lab', 'about'];
 const THEMES = [['system', Desktop], ['light', Sun], ['dark', Moon]];
 
 function LangSwitch({full = false}) {
