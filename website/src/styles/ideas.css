@@ -72,6 +72,9 @@
 .prose.idea-body { font-size: var(--text-body-sm); line-height: 1.85; }
 .prose.idea-body > * + * { margin-top: 0.9em; }
 .idea-body .heading-anchor { display: none; }
+/* Screenshots keep their own size instead of being blown up to the column width. */
+.prose.idea-body figure img { width: auto; max-width: 100%; border-radius: var(--radius-sm); }
+.idea-write { margin-top: var(--space-6); gap: var(--space-2); }
 .idea-body-plain { font-size: var(--text-body-sm); line-height: 1.85; }
 .idea[data-status="parked"] .idea-body, .idea[data-status="parked"] .idea-title { opacity: 0.72; }
 .idea-tags { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); color: var(--color-text-tertiary); font-size: var(--text-caption); line-height: var(--leading-caption); }

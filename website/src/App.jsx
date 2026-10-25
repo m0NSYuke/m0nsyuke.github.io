@@ -18,6 +18,8 @@ if (/^#(article|project|log)\//.test(window.location.hash)) loadFullContent().ca
 const Lab = lazy(() => import('./pages/Lab'));
 const Projects = lazy(() => import('./pages/Projects'));
 const Ideas = lazy(() => import('./pages/Ideas'));
+// The editor (and its Markdown engine) loads only when writing.
+const IdeaEditor = lazy(() => import('./pages/IdeaEditor'));
 const Workbench = lazy(() => (PAGES_MODE ? import('./pages/Workbench') : import('./Admin')));
 
 const parse = () => {
@@ -43,7 +45,7 @@ function describe({page, id}, lang) {
     lab: {title: t('meta.lab'), description: t('meta.labDescription')},
     about: {title: t('meta.about'), description: bioText(settings, lang)},
     projects: {title: t('meta.projects'), description: t('meta.projectsDescription')},
-    ideas: {title: t('meta.ideas'), description: t('meta.ideasDescription')},
+    ideas: {title: id === 'new' || id === 'edit' ? `写随记 · ${t('meta.ideas')}` : t('meta.ideas'), description: t('meta.ideasDescription')},
     works: {title: t('meta.projects'), description: t('meta.projectsDescription')},
     admin: {title: t('meta.admin'), description},
   })[page] || {title: t('meta.missing'), description};
@@ -65,6 +67,8 @@ function Page({location}) {
   if (page === 'about') return <About/>;
   if (page === 'lab') return <Lab/>;
   if (page === 'projects' || page === 'works') return <Projects focus={page === 'projects' ? id : undefined}/>;
+  if (page === 'ideas' && id === 'new') return <IdeaEditor key="new"/>;
+  if (page === 'ideas' && id === 'edit' && section) return <IdeaEditor key={`edit-${section}`} editId={section}/>;
   if (page === 'ideas') return <Ideas focus={id}/>;
   if (page === 'admin') return <Workbench onUpdated={() => {}}/>;
   if (['article', 'project', 'log'].includes(page)) {

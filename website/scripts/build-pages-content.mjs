@@ -36,7 +36,8 @@ export function compileIdeas(contentRoot) {
   if(!existsSync(folder))return [];
   return readdirSync(folder).filter(file=>file.endsWith('.md')&&!file.startsWith('_')).map(file=>{
     const id=file.slice(0,-3);
-    if(!/^[a-z0-9][a-z0-9-]{0,79}$/.test(id))throw new Error(`Invalid idea file name (lowercase letters, digits and dashes): ${file}`);
+    // "new" and "edit" are the editor's own routes (#ideas/new, #ideas/edit/<id>).
+    if(!/^[a-z0-9][a-z0-9-]{0,79}$/.test(id)||id==='new'||id==='edit')throw new Error(`Invalid idea file name (lowercase letters, digits and dashes): ${file}`);
     const source=readFileSync(resolve(folder,file),'utf8').replace(/^﻿/,'').replace(/\r\n/g,'\n');
     const match=source.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
     if(!match)throw new Error(`Idea needs a --- header with title and date: ${file}`);

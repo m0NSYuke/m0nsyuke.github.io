@@ -6,7 +6,21 @@ React、Motion 和 Three.js 实现黑金界面、搜索、筛选、滚动时间�
 
 ## 写随记
 
-「随记」栏（`#ideas`）放还没成形的想法，一个想法一个 Markdown 文件，放在 `website/content/ideas/`。最快的方式：打开网站 `#admin`，点「新建一条随记」，GitHub 会带着今天的日期和模板打开新文件。也可以在 GitHub 上复制 `_template.md`。
+「随记」栏（`#ideas`）放还没成形的想法，一个想法一个 Markdown 文件，放在 `website/content/ideas/`。
+
+### 在网站上写（推荐）
+
+打开 `https://m0nsyuke.github.io/#ideas/new`（或 `#admin` → 打开随记编辑器）。
+
+- **所见即所得**：截图直接粘贴（或拖进来），图片在正文里原样显示；输入 `/` 插入标题、列表、待办、公式、代码块和表格。
+- **不丢内容**：每次停笔约半秒自动存为本机草稿（IndexedDB，图片也在内）；刷新、断网、关掉页面都能接着写。`Ctrl S` 立即保存。草稿只在这台设备上。
+- **点「发布」才公开**：正文和图片在一次提交里写进仓库（图片压缩为不超过 1600 px 的 WebP，放在 `website/public/ideas-media/<随记>/`），约 2 分钟后上线。
+- 连接后随记页会出现「写随记」按钮，每条随记标题旁有编辑按钮；编辑时删掉的图片会在同一次提交里从仓库删除。
+- **第一次使用要连接 GitHub**（每台设备一次）：在 GitHub 新建一个 fine-grained token，Repository access 只选本仓库，Permissions 里 Contents 设为 Read and write，粘贴到编辑器。令牌只存在这个浏览器里、只发给 GitHub，可以随时在 GitHub 的 Settings → Developer settings 撤销。
+
+### 在 GitHub 上写
+
+打开网站 `#admin`，点「新建随记文件」，GitHub 会带着今天的日期和模板打开新文件；也可以复制 `_template.md`。
 
 ```markdown
 ---

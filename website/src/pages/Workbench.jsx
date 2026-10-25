@@ -12,7 +12,8 @@ function newIdeaUrl(repo) {
 export default function Workbench() {
   const repo = `https://github.com/${REPOSITORY}`;
   const steps = [
-    ['写随记', '一个想法一个文件：改文件名里的英文短语，填标题、标签和状态（萌芽 / 推进中 / 已验证 / 搁置），提交即发布。', newIdeaUrl(repo), '新建一条随记'],
+    ['写随记', '在网站上直接写：图片可以粘贴，草稿自动保存在本机，点发布才公开。第一次使用要连接 GitHub。', '#ideas/new', '打开随记编辑器'],
+    ['在 GitHub 写随记', '不方便用编辑器时：一个想法一个 Markdown 文件，填标题、标签和状态（萌芽 / 推进中 / 已验证 / 搁置），提交即发布。', newIdeaUrl(repo), '新建随记文件'],
     ['写文章', '正文使用 Markdown，文章信息保存在同名 JSON 文件。', `${repo}/tree/main/website/content/published`, '打开文章目录'],
     ['改资料', '更新个人介绍、大学、专业和联系方式。', `${repo}/edit/main/website/content/profile.json`, '编辑个人资料'],
     ['看发布', '提交修改后检查发布进度，完成后刷新网站。', `${repo}/actions`, '查看发布进度'],

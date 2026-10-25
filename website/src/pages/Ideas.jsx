@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
-import {LinkSimple} from '@phosphor-icons/react';
+import {LinkSimple, NotePencil, PencilSimple} from '@phosphor-icons/react';
+import {hasToken} from '../lib/idea-store';
 import '../styles/article.css';
 import '../styles/ideas.css';
 import {copyText} from '../components/Toast';
@@ -23,7 +24,9 @@ function useRendered() {
   return html;
 }
 
-function Idea({idea, html, focused}) {
+const plain = body => body.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/[#*`>_]/g, '');
+
+function Idea({idea, html, focused, writer}) {
   const t = useT();
   return <li className="idea" id={`idea-${idea.id}`} data-status={idea.status} data-focused={focused || undefined}>
     <span className="idea-dot" aria-hidden="true"/>
@@ -38,10 +41,11 @@ function Idea({idea, html, focused}) {
         <button type="button" className="icon-button idea-link" aria-label={t('ideas.link')} title={t('ideas.link')} onClick={() => copyText(`${SITE_URL}/#ideas/${idea.id}`, t('ideas.copied'))}>
           <LinkSimple size={16} aria-hidden="true"/>
         </button>
+        {writer && <a className="icon-button idea-link" href={`#ideas/edit/${idea.id}`} aria-label="编辑这条随记" title="编辑这条随记"><PencilSimple size={16} aria-hidden="true"/></a>}
       </h3>
       {html
         ? <div className="prose idea-body" dangerouslySetInnerHTML={{__html: html}}/>
-        : <p className="idea-body idea-body-plain">{idea.body.replace(/[#*`>_]/g, '').slice(0, 280)}</p>}
+        : <p className="idea-body idea-body-plain">{plain(idea.body).slice(0, 280)}</p>}
       {idea.tags.length > 0 && <ul className="idea-tags" role="list">{idea.tags.map(tag => <li key={tag}>{tag}</li>)}</ul>}
     </article>
   </li>;
@@ -50,6 +54,8 @@ function Idea({idea, html, focused}) {
 export default function Ideas({focus}) {
   const t = useT();
   const html = useRendered();
+  // Only a browser connected to the site repository gets the writing controls.
+  const [writer] = useState(hasToken);
   const [status, setStatus] = useState('all'), [tag, setTag] = useState(null);
   const shown = ideas.filter(idea => (status === 'all' || idea.status === status) && (!tag || idea.tags.includes(tag)));
   // Group the stream by month, newest first.
@@ -80,6 +86,7 @@ export default function Ideas({focus}) {
       <p className="eyebrow">{t('ideas.eyebrow')}</p>
       <h1 className="page-title" tabIndex={-1}>{t('ideas.title')}</h1>
       <p className="page-lede">{t('ideas.lede')}</p>
+      {writer && <a className="button button-primary idea-write" href="#ideas/new"><NotePencil size={18} aria-hidden="true"/>写随记</a>}
     </header>
     <div className="ideas-filters">
       <div className="segmented" role="radiogroup" aria-label={t('ideas.filter')} onKeyDown={keydown}>
@@ -99,7 +106,7 @@ export default function Ideas({focus}) {
     {months.length ? <ol className="idea-stream" role="list">
       {months.map(month => <li key={month.key} className="idea-month">
         <h2 className="idea-month-title">{t('ideas.month', ...month.key.split('-'))}</h2>
-        <ol role="list">{month.ideas.map(idea => <Idea key={idea.id} idea={idea} html={html[idea.id]} focused={focus === idea.id}/>)}</ol>
+        <ol role="list">{month.ideas.map(idea => <Idea key={idea.id} idea={idea} html={html[idea.id]} focused={focus === idea.id} writer={writer}/>)}</ol>
       </li>)}
     </ol> : <div className="empty-note"><p>{t('ideas.empty')}</p></div>}
   </div>;

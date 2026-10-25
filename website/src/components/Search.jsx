@@ -67,7 +67,7 @@ export default function Search({open, onClose, triggerRef}) {
   }), ...ideas.map(idea => {
     const inMeta = `${idea.title} ${idea.tags.join(' ')}`.toLowerCase().includes(needle);
     if (!inMeta && !idea.body.toLowerCase().includes(needle)) return null;
-    return {key: `idea-${idea.id}`, href: `#ideas/${idea.id}`, meta: `${t('nav.ideas')} · ${t(`ideas.status.${idea.status}`)}`, title: idea.title, summary: excerpt(idea.body, normalized) || idea.body.replace(/[#*`>_\-]+/g, ' ').replace(/\s+/g, ' ').slice(0, 80)};
+    return {key: `idea-${idea.id}`, href: `#ideas/${idea.id}`, meta: `${t('nav.ideas')} · ${t(`ideas.status.${idea.status}`)}`, title: idea.title, summary: excerpt(idea.body, normalized) || idea.body.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/[#*`>_\-]+/g, ' ').replace(/\s+/g, ' ').slice(0, 80)};
   })].filter(Boolean).slice(0, 8) : [];
   const visit = result => { window.location.hash = result.href.slice(1); onClose(); };
   const keydown = event => {
