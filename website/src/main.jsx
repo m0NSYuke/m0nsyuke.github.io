@@ -12,6 +12,7 @@ import './styles/layout.css';
 import './styles/home.css';
 import './styles/pages.css';
 import './styles/projects.css';
+import './styles/refine.css';
 import {App} from './App.jsx';
 
 createRoot(document.getElementById('root')).render(

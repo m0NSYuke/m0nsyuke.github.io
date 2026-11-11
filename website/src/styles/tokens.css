@@ -26,6 +26,13 @@
   --logo-filter: none;
   --shadow-1: none;
   --shadow-2: none;
+  /* Round 3 finish: paper grain, edge light, card glow. */
+  --grain-opacity: 0.07;
+  --grain-blend: overlay;
+  --edge-light: inset 0 1px 0 rgb(255 255 255 / 5%);
+  --card-wash: linear-gradient(180deg, rgb(255 255 255 / 2.5%), transparent 55%);
+  --glow-accent: 0 10px 32px -10px rgb(217 169 95 / 55%);
+  --wordmark-fade: color-mix(in srgb, var(--color-text-primary) 78%, var(--color-bg));
   --code-keyword: #e0a979;
   --code-string: #a9c98f;
   --code-number: #d9b7f0;
@@ -175,6 +182,11 @@
     --code-attr: #7a5208;
     --shadow-1: 0 1px 2px rgb(20 20 19 / 6%), 0 1px 1px rgb(20 20 19 / 4%);
     --shadow-2: 0 12px 32px rgb(20 20 19 / 10%), 0 2px 6px rgb(20 20 19 / 6%);
+    --grain-opacity: 0.05;
+    --grain-blend: multiply;
+    --edge-light: inset 0 1px 0 rgb(255 255 255 / 70%);
+    --card-wash: linear-gradient(180deg, rgb(255 255 255 / 55%), transparent 60%);
+    --glow-accent: 0 10px 28px -12px rgb(135 88 17 / 55%);
     color-scheme: light;
   }
 }
@@ -210,6 +222,11 @@
   --code-attr: #7a5208;
   --shadow-1: 0 1px 2px rgb(20 20 19 / 6%), 0 1px 1px rgb(20 20 19 / 4%);
   --shadow-2: 0 12px 32px rgb(20 20 19 / 10%), 0 2px 6px rgb(20 20 19 / 6%);
+  --grain-opacity: 0.05;
+  --grain-blend: multiply;
+  --edge-light: inset 0 1px 0 rgb(255 255 255 / 70%);
+  --card-wash: linear-gradient(180deg, rgb(255 255 255 / 55%), transparent 60%);
+  --glow-accent: 0 10px 28px -12px rgb(135 88 17 / 55%);
   color-scheme: light;
 }
 

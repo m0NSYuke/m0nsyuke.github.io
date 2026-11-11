@@ -79,6 +79,19 @@ export function App() {
   const searchRef = useRef(null), mainRef = useRef(null), previousPage = useRef(null);
   const pageKey = ['notes', 'projects'].includes(location.page) ? location.page : `${location.page}/${location.id || ''}`;
 
+  // Card spotlight: hand the pointer position to whichever card is under it (CSS draws the light).
+  useEffect(() => {
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const move = event => {
+      const card = event.target.closest?.('.direction-card, .map-line, .project-card');
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+      card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+    };
+    document.addEventListener('pointermove', move, {passive: true});
+    return () => document.removeEventListener('pointermove', move);
+  }, []);
   useEffect(() => {
     const change = () => setLocation(parse());
     let pending = '';
