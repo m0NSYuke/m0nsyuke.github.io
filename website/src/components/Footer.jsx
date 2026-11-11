@@ -29,5 +29,6 @@ export default function Footer() {
       </nav>
       <p className="footer-copy">© {new Date().getFullYear()} m0NSYuke</p>
     </div>
+    <p className="footer-mark container" aria-hidden="true"><span>m0NSYuke</span></p>
   </footer>;
 }

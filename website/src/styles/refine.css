@@ -1,0 +1,173 @@
+/* Round 3 finish layer: texture, light, editorial rhythm. Loaded last; tokens only. See DESIGN.md §6. */
+
+/* Typography polish: CJK/Latin auto spacing, trimmed full-width punctuation, steady numerals. */
+body {
+  text-autospace: ideograph-alpha ideograph-numeric;
+  text-spacing-trim: normal;
+}
+.note-meta, .article-meta time, .timeline-label, .count-up, .direction-index, .morph-index, .project-card-kind { font-variant-numeric: tabular-nums; }
+html { scrollbar-color: var(--color-border-strong) transparent; }
+
+/* Paper grain: a static noise tile under the content, above the contour field. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Hero: the wordmark fades into the page like ink settling; a warm glow sits behind the sculpture. */
+.wordmark {
+  background: linear-gradient(180deg, var(--color-text-primary) 50%, var(--wordmark-fade));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  border-bottom: 0;
+  background-repeat: no-repeat;
+}
+.hero .container > .wordmark + .hero-grid { position: relative; }
+.hero .container > .wordmark + .hero-grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-accent) 0, var(--color-accent) var(--space-8), var(--color-border) var(--space-8), var(--color-border) 70%, transparent);
+}
+.hero-art::before {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  z-index: -1;
+  border-radius: var(--radius-pill);
+  background: radial-gradient(closest-side, rgb(var(--color-art-line) / 16%), rgb(var(--color-art-line) / 4%) 60%, transparent);
+  filter: blur(24px);
+}
+.hero-art { isolation: isolate; }
+.terminal {
+  padding: var(--space-3) var(--space-4);
+  border-left: 1px solid var(--color-border);
+}
+@media (max-width: 767px) { .terminal { padding: 0 0 0 var(--space-3); } }
+
+/* Buttons: a lit top edge and a soft accent glow on hover. */
+.button-primary {
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 14%), transparent 60%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 28%), 0 1px 2px rgb(0 0 0 / 18%);
+  transition: transform var(--dur-long) var(--ease-spring), background-color var(--dur-short) var(--ease-standard), box-shadow var(--dur-medium) var(--ease-standard);
+}
+@media (hover: hover) { .button-primary:hover { box-shadow: inset 0 1px 0 rgb(255 255 255 / 28%), var(--glow-accent); } }
+.button-secondary { background: color-mix(in srgb, var(--color-bg) 60%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+/* Chapters: every home section opens on a hairline with an accent tick and a running number. */
+main { counter-reset: chapter; }
+.chapter { counter-increment: chapter; }
+.chapter::before {
+  content: "§ " counter(chapter, decimal-leading-zero);
+  display: block;
+  grid-column: 1 / -1;
+  margin-bottom: var(--space-7);
+  padding-top: var(--space-4);
+  background:
+    linear-gradient(var(--color-accent), var(--color-accent)) 0 0 / var(--space-6) 1px no-repeat,
+    linear-gradient(90deg, var(--color-border), var(--color-border) 75%, transparent) 0 0 / 100% 1px no-repeat;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-xs);
+  line-height: var(--leading-mono-xs);
+  letter-spacing: var(--tracking-mono);
+}
+.home-about.chapter::before { margin-bottom: 0; }
+@media (max-width: 767px) { .chapter::before { margin-bottom: var(--space-6); } }
+
+/* Surfaces: a faint wash and lit top edge so cards read as objects, not outlines. */
+.direction-card, .map-line, .morph, .project-card, .contact-card, .pager-link {
+  box-shadow: var(--edge-light), var(--shadow-1);
+}
+.direction-card, .map-line { background-image: var(--card-wash); }
+
+/* Spotlight: cards light up where the pointer is, on the fill and along the border. */
+.direction-card, .map-line, .project-card { position: relative; }
+.direction-card::before, .map-line::before, .project-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  background:
+    radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--color-art-line) / 70%), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-long) var(--ease-standard);
+}
+.direction-card::after, .map-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--color-art-line) / 7%), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-long) var(--ease-standard);
+}
+.direction-card > *, .map-line > * { position: relative; z-index: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .direction-card:hover::before, .direction-card:hover::after,
+  .map-line:hover::before, .map-line:hover::after,
+  .project-card:hover::before { opacity: 1; }
+}
+
+/* Media frames: a hairline inner ring keeps dark artwork crisp on both themes. */
+.note-card-media { position: relative; box-shadow: var(--shadow-1); }
+.note-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 6%);
+  pointer-events: none;
+}
+.note-card-title { text-wrap: balance; }
+
+/* Article: a larger, calmer title block. */
+.article .article-title { font-size: var(--text-display-1); line-height: var(--leading-display-1); }
+.article .article-layout {
+  border-top: 0;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent)) 0 0 / var(--space-6) 1px no-repeat,
+    linear-gradient(90deg, var(--color-border), var(--color-border) 75%, transparent) 0 0 / 100% 1px no-repeat;
+}
+
+/* Footer: the wordmark returns as an outline, cut by the page edge. */
+.site-footer { position: relative; overflow: hidden; }
+.footer-mark {
+  height: calc(var(--text-wordmark) * 0.6);
+  margin-top: calc(-1 * var(--space-5));
+  overflow: hidden;
+  font-family: var(--font-wordmark);
+  font-size: var(--text-wordmark);
+  line-height: var(--leading-wordmark);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-border-strong);
+  -webkit-mask: linear-gradient(180deg, #000 10%, transparent 95%);
+  mask: linear-gradient(180deg, #000 10%, transparent 95%);
+  user-select: none;
+  pointer-events: none;
+}
+.footer-mark span { display: block; margin-inline: -0.04em; }
+@media (max-width: 767px) { .footer-mark { margin-top: 0; } }
+/* The project card clips its overflow, so its border light sits just inside the edge. */
+.project-card::before { inset: 0; }

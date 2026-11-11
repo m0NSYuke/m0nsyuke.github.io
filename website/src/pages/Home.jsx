@@ -87,7 +87,7 @@ export default function Home() {
   const t = useT();
   return <>
     <Hero/>
-    <section className="section container" aria-labelledby="directions-title">
+    <section className="section container chapter" aria-labelledby="directions-title">
       <Reveal className="section-head">
         <h2 id="directions-title" className="section-title">{t('home.directions')}</h2>
         <p className="section-lede">{t('home.directionsLede')}</p>
@@ -95,14 +95,14 @@ export default function Home() {
       <Reveal><Morph/></Reveal>
       <DirectionCards/>
     </section>
-    <section className="section container" aria-labelledby="notes-title">
+    <section className="section container chapter" aria-labelledby="notes-title">
       <Reveal className="section-head section-head-row">
         <h2 id="notes-title" className="section-title">{t('home.latest')}</h2>
         <a className="text-link" href="#notes">{t('home.allNotes')}<ArrowUpRight size={16} aria-hidden="true"/></a>
       </Reveal>
       <NoteGrid notes={articles.slice(0, 3)}/>
     </section>
-    <section className="section container" aria-labelledby="projects-title">
+    <section className="section container chapter" aria-labelledby="projects-title">
       <Reveal className="section-head section-head-row">
         <div className="section-head-copy">
           <h2 id="projects-title" className="section-title">{t('home.projects')}</h2>
@@ -112,8 +112,8 @@ export default function Home() {
       </Reveal>
       <ProjectCards/>
     </section>
-    <div className="section container"><KnowledgeMap/></div>
-    <section className="section container home-about" aria-labelledby="about-title">
+    <div className="section container chapter"><KnowledgeMap/></div>
+    <section className="section container home-about chapter" aria-labelledby="about-title">
       <Reveal className="home-about-head">
         <h2 id="about-title" className="section-title">{t('home.about')}</h2>
         <p className="section-lede">{t('home.aboutLede')}</p>
